@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet {
             // ログイン処理    
         	// 空欄の場合	
         	if (email == null || email.isEmpty() || pass == null || pass.isEmpty()) {
-                request.setAttribute("error", "入力が正しくありません");
+                request.setAttribute("error", "メールアドレスまたはパスワードが誤っています。");
                 RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
                 dispatcher.forward(request, response);
                 return;

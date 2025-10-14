@@ -42,8 +42,53 @@ public class UserDAO {
         //入力したパスワードとパスワードが存在…データベースのユーザー情報を返す
         //存在しない…nullを返す
         return user;
-     
     }
+    public User findByEmail(String email) throws SQLException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DBManager.getConnection();
+            String sql = "SELECT name, pass, email FROM users WHERE email = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            if (rs.next()) {//emailが存在したら
+                User user = new User();
+                user.setEmail(rs.getString("name"));//ユーザー情報取得する
+                user.setPass(rs.getString("pass"));
+                user.setName(rs.getString("email"));
+                return user;//null→userに変える
+            } else {
+                return null;//該当するメールアドレスがなかったらnullのまま返す
+            }
+        } finally {
+            if (rs != null) try { rs.close(); } catch(Exception e){}
+            if (ps != null) try { ps.close(); } catch(Exception e){}
+            if (conn != null) try { conn.close(); } catch(Exception e){}
+        }
+    }
+    
+    //会員登録内容をテーブルに追加する
+    public boolean insert(User user) throws SQLException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DBManager.getConnection();
+            String sql = "INSERT INTO users(name, pass, email) VALUES(? , ? , ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getPass());
+            ps.setString(3, user.getEmail());
+            int r = ps.executeUpdate();
+            return (r == 1);
+        } finally {
+            if (ps != null) try { ps.close(); } catch(Exception e){}
+            if (conn != null) try { conn.close(); } catch(Exception e){}
+        }
+    }
+
+    
     
 }
 
