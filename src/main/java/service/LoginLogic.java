@@ -24,3 +24,4 @@ public class LoginLogic {
         return diaryDAO.findByUserId(user_id);
     }
 }
+

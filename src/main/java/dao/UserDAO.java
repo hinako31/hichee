@@ -87,7 +87,34 @@ public class UserDAO {
             if (conn != null) try { conn.close(); } catch(Exception e){}
         }
     }
+    //ユーザー情報変更
+    public boolean update(User user) throws SQLException {
+        String sql = "UPDATE users SET name = ?, pass = ?, email = ? WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();	
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        	
+        	 conn.setAutoCommit(false);  // 明示的にOFFにするなら（OFFなら不要）
+        	 
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getPass());
+            stmt.setString(3, user.getEmail());
+            stmt.setInt(4, user.getId());
 
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                conn.rollback();  // 更新されなかったらロールバック
+                return false;
+            }
+
+            conn.commit();  // 明示的にコミットする
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
     
     
 }

@@ -19,6 +19,13 @@ public class RegistLogic {
         return userDAO.insert(user);//会員登録情報をDBに追加
     
 	}
+
+
+    //ユーザー情報変更時の変更
+    public boolean updateUser(User user) throws SQLException {
+    	 return userDAO.update(user);  // DAOに更新指示
+	  
+    }
 	
 
 }

@@ -5,8 +5,24 @@
 <head>
 <meta charset="UTF-8">
 <title>hichee マイページ画面</title>
+
 </head>
 <body>
-
+<!--ヘッダー-->
+<main class="wrapper">
+     <h2>My Page</h2>
+<form action="NewCheese" method="get">
+<input type="submit" name="newcheese" value="New Cheese" class="nav_btn">
+</form>
+</form>
+	<form action="MyCheese" method="get">
+	<input type="submit" name="mycheese" value="My Cheese" class="nav_btn">
+	</form>
+	<form action="Account" method="get">
+	<input type="submit" name="account" value="Me" class="nav_btn">
+	</form>
+	
+	${user.name}さんの
+	Cheese Diaryは${diaryList.size()}件でチュ～🐭
 </body>
 </html>
