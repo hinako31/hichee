@@ -37,9 +37,12 @@ public class NewCheeseServlet extends HttpServlet {
 		}
 
 
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 request.setCharacterEncoding("UTF-8");
 		 HttpSession session = request.getSession();
+		 
+		//NewCheese新規登録→確認ボタンを押した時
 		// 入力値取得
         String name = request.getParameter("name");
         String memorialYearStr = request.getParameter("memorial_year");
@@ -56,6 +59,7 @@ public class NewCheeseServlet extends HttpServlet {
         diary.setName(name);
         diary.setReview(review);
 
+        //エラーの☑
         // memorialYear
         Integer memorialYear = null;
         if (memorialYearStr != null && !memorialYearStr.isEmpty()) {
@@ -145,4 +149,18 @@ public class NewCheeseServlet extends HttpServlet {
         // 確認画面にリダイレクト（仮）
         response.sendRedirect("newCheeseCheck.jsp");
     }
+    // imgPartからファイル名を取り出す
+     private String getFileName(Part part) {
+     if (part == null) return null;
+     String contentDisp = part.getHeader("content-disposition");
+     if (contentDisp == null) return null;
+
+     for (String cd : contentDisp.split(";")) {
+         if (cd.trim().startsWith("filename")) {
+            String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+            return fileName.substring(fileName.lastIndexOf("\\") + 1);
+          }
+        }
+      return null;
+     }
 }
