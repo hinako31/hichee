@@ -8,8 +8,8 @@ public class Diary implements Serializable {
     private int userid;
     private String name;         // 店の名前
     private String review;       // 感想
-    private int period_year;            // 訪問年
-    private int period_month;           // 訪問月
+    private Integer period_year;            // 訪問年
+    private Integer period_month;           // 訪問月
     private int area_id;    // 都道府県ID
     private String file_name;    // 画像ファイル名
     private String file_path;    // 画像パス
@@ -53,21 +53,20 @@ public class Diary implements Serializable {
 		this.review = review;
 	}
 
-	public int getPeriod_year() {
-		return period_year;
+	public Integer getPeriod_year() {
+	    return period_year;
+	}
+	public void setPeriod_year(Integer period_year) {
+	    this.period_year = period_year;
 	}
 
-	public void setPeriod_year(int period_year) {
-		this.period_year = period_year;
+	public Integer getPeriod_month() {
+	    return period_month;
+	}
+	public void setPeriod_month(Integer period_month) {
+	    this.period_month = period_month;
 	}
 
-	public int getPeriod_month() {
-		return period_month;
-	}
-
-	public void setPeriod_month(int period_month) {
-		this.period_month = period_month;
-	}
 
 	public int getArea_id() {
 		return area_id;

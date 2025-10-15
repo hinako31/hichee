@@ -16,6 +16,7 @@ public class DiaryDAO {
     private final String DB_USER = "root";
     private final String DB_PASS = "password";
 
+    //ログインしたときのDiary記録取得
     public List<Diary> findByUserId(int user_id) {
         List<Diary> diaryList = new ArrayList<>();
 
@@ -48,4 +49,22 @@ public class DiaryDAO {
 
         return diaryList;
     }
+
+    //退会時お気に入り削除
+	public boolean deleteDiary(int userId) {
+    	String sql = "DELETE FROM diaries WHERE user_id = ?";
+    	try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+    		){
+    		 ps.setInt(1, userId);
+             ps.executeUpdate();
+             return true; // 件数は気にしない（0でもOK）
+    	
+    	}catch (SQLException e) {
+            System.out.println("SQLエラー: " + e.getMessage());
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
+	
 }

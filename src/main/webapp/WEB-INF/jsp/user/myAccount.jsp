@@ -20,6 +20,8 @@
 	<form action="Resin" method="get">
 	<input type="submit" name="resign" value="Resign(退会)" class="nav_btn">
 	</form>
+	<button type="button" onclick="history.back()" class="nav_btn">
+		<i class="fa-solid fa-arrow-rotate-left"></i>戻る</button>
 </main>	
 <!--フッター-->
 </body>

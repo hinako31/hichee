@@ -115,8 +115,25 @@ public class UserDAO {
             throw e;
         }
     }
-    
-    
+	  
+    //退会時ユーザー削除
+    public boolean delete(int userId) {
+    	
+    	String sql="DELETE FROM users WHERE id = ?";
+    	try (
+                Connection conn = DBManager.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+            ) {
+    		pstmt.setInt(1,userId);
+    		int rowAffected = pstmt.executeUpdate();
+    	
+    		return rowAffected >0;
+    	}catch (SQLException e) {
+            System.out.println("SQLエラー: " + e.getMessage());
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
 }
 
     
