@@ -15,8 +15,8 @@
 <input type="submit" name="newcheese" value="New Cheese" class="nav_btn">
 </form>
 </form>
-	<form action="MyCheese" method="get">
-	<input type="submit" name="mycheese" value="My Cheese" class="nav_btn">
+	<form action="MyCheese" method="post">
+	<input type="submit" name="action" value="My Cheese" class="nav_btn">
 	</form>
 	<form action="Account" method="get">
 	<input type="submit" name="account" value="Me" class="nav_btn">

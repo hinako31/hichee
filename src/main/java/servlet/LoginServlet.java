@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String pass = request.getParameter("pass");
         String action = request.getParameter("action");
-        
+        String mypage =request.getParameter("mypage");
      	
         if ("login".equals(action)) {
             // ログイン処理    
@@ -77,8 +77,12 @@ public class LoginServlet extends HttpServlet {
     		else if ("regist".equals(action)) {
 	              response.sendRedirect("regist.jsp");
 	          }
-    		
-
-}
-	}
+           }
+        
+        //検索画面、新規日記登録完了画面からマイページに遷移する
+        if ("My Pageへ".equals(mypage)) {
+        	  RequestDispatcher dispatcher = request.getRequestDispatcher("mypage.jsp");
+              dispatcher.forward(request, response);
+	    }
+   }
 }

@@ -5,6 +5,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +17,9 @@ import jakarta.servlet.http.Part;
 
 import model.Area;
 import model.Diary;
+import model.User;
 import service.AreaLogic;
+import service.DiaryLogic;
 
 
 @WebServlet("/NewCheese")
@@ -34,15 +37,61 @@ public class NewCheeseServlet extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		}
+		RequestDispatcher dispatcher = request.getRequestDispatcher("newCheese.jsp");
+        dispatcher.forward(request, response);
+	}
 
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 request.setCharacterEncoding("UTF-8");
+		 HttpSession session2 = request.getSession();
+		 User user = (User) session2.getAttribute("user");
+
+		 if (user == null) {
+		     // ログインしていない、またはセッション切れの場合の処理
+		     response.sendRedirect("login.jsp");  // ログインページなどに戻す
+		     return;
+		 }
 		 HttpSession session = request.getSession();
+		//確認画面からの分岐
+		 String step = request.getParameter("step");
+		  if ("戻る".equals(step)) {
+		        Diary diary = (Diary) session.getAttribute("diary");
+		        request.setAttribute("diary", diary);
+		        // エリアリストも必要ならセットする
+		        AreaLogic areaLogic = new AreaLogic();
+		        List<Area> areaList = areaLogic.getAllAreas();
+		        request.setAttribute("areaList", areaList);
+		        
+		        request.getRequestDispatcher("/newCheese.jsp").forward(request, response);
+		        return;
+		    }
+		    if ("登録".equals(step)) {
+		        Diary diary = (Diary) session.getAttribute("diary");
+		        if (diary == null) {
+		            // セッション切れなどの処理
+		            response.sendRedirect("newCheese.jsp");
+		            return;
+		        }
+		        // DiaryLogicに登録処理依頼
+		        DiaryLogic diaryLogic = new DiaryLogic();
+		      
+		        boolean success = diaryLogic.registerDiary(diary, user.getId());
+
+		        if (success) {
+		            session.removeAttribute("diary");
+		            response.sendRedirect("newCheeseResult.jsp");
+		        } else {
+		            // 登録失敗時の処理
+		            request.setAttribute("errorMessage", "登録に失敗しました。再度お試しください。");
+		            request.getRequestDispatcher("/newCheeseCheck.jsp").forward(request, response);
+		        }
+		        return;
+		    }
+
 		 
-		//NewCheese新規登録→確認ボタンを押した時
+//NewCheese新規登録→確認ボタンを押した時
 		// 入力値取得
         String name = request.getParameter("name");
         String memorialYearStr = request.getParameter("memorial_year");
@@ -144,11 +193,11 @@ public class NewCheeseServlet extends HttpServlet {
         }
 
         // エラーなし → 入力値をセッションに保存して確認画面へリダイレクト
-        session.setAttribute("diary", diary);
-
-        // 確認画面にリダイレクト（仮）
-        response.sendRedirect("newCheeseCheck.jsp");
-    }
+        session.setAttribute("diary", diary); // セッションに保存
+        request.getRequestDispatcher("/newCheeseCheck.jsp").forward(request, response); 
+        // 確認画面へフォワード
+	}
+	//postの外側
     // imgPartからファイル名を取り出す
      private String getFileName(Part part) {
      if (part == null) return null;
@@ -162,5 +211,7 @@ public class NewCheeseServlet extends HttpServlet {
           }
         }
       return null;
-     }
+     
+     }    
+
 }
