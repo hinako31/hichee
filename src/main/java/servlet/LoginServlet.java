@@ -31,8 +31,9 @@ public class LoginServlet extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
+		  RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+		    dispatcher.forward(request, response);
+		}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		   // リクエストパラメータの取得
@@ -48,7 +49,7 @@ public class LoginServlet extends HttpServlet {
         	// 空欄の場合	
         	if (email == null || email.isEmpty() || pass == null || pass.isEmpty()) {
                 request.setAttribute("error", "メールアドレスまたはパスワードが誤っています。");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
                 dispatcher.forward(request, response);
                 return;
         		}
@@ -70,7 +71,7 @@ public class LoginServlet extends HttpServlet {
                 
                 //ユーザー情報とdiary情報を取得してセッションスコープに保存後
                 //マイページに遷移
-                RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/user/mypage.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/mypage.jsp");
                 dispatcher.forward(request, response);
          
 	          }
@@ -78,13 +79,15 @@ public class LoginServlet extends HttpServlet {
            }
       //もし会員登録ボタンを押していたら会員登録ページに遷移
         else if ("regist".equals(action)) {
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/user/regist.jsp");
+			 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/regist.jsp");
              dispatcher.forward(request, response);
+             System.out.println(1);
+             return; 
       
           }
         //検索画面、新規日記登録完了画面からマイページに遷移する
         if ("My Pageへ".equals(mypage)) {
-        	  RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/user/mypage.jsp");
+        	  RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/mypage.jsp");
               dispatcher.forward(request, response);
 	    }
    }
