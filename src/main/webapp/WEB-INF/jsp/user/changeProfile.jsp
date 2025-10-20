@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+       <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+   
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,13 +11,13 @@
 <body>
 <!--ヘッダー-->
  <main class="wrapper">
-		    <h2>Change Plofile</h2>
+		    <h2>Change Profile</h2>
             <c:if test="${not empty error}">
 		        <p style="color:red;">${error}</p>
 		    </c:if>
 		
-		    <form action="ChangePlofile" method="post" class="regist">
-		        <input type="hidden" name="step" value="formsubmit">
+		    <form action="ChangeProfile" method="post" class="regist">
+		        
 				<p>
 			        <label for="name">名前：
 			        <input type="text" name="name" value="${tentative.name}"></label>
@@ -32,8 +34,8 @@
 			        <label for="confirmPass">パスワード（確認用）：
 			        <input type="password" name="confirmPass" ></label>
 				</p>
-		        <input type="submit" name="check" value="確認" class="nav_btn">
-		        <input type="submit" name="back" value="戻る" class="nav_btn">
+		        <input type="submit" name="action" value="確認" class="nav_btn"><br>
+		        <input type="submit" name="action" value="戻る" class="nav_btn">
 		    </form>
 	    
 		</main>

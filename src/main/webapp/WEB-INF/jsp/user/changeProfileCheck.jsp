@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,7 +27,7 @@
 				</p>
 			<!-- msg_frame -->
 			
-			   <form action="ChangePlofile" method="post">
+			   <form action="ChangeProfile" method="post">
 			     <input type="submit" name="step" value="変更" class="nav_btn">
 			     <input type="submit" name="step" value="戻る" class="nav_btn">
 			   </form>

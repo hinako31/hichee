@@ -167,7 +167,7 @@ public class MyCheeseServlet extends HttpServlet {
                     DiaryLogic diaryLogic = new DiaryLogic();
                     Diary diary = diaryLogic.getDiaryById(id);
                     request.setAttribute("diary", diary);
-                    request.getRequestDispatcher("myCheeseDetail.jsp").forward(request, response);
+                    request.getRequestDispatcher("/WEB-INF/jsp/user/myCheeseDetail.jsp").forward(request, response);
                     return;
                 } catch (NumberFormatException e) {
                     // 不正なIDの場合の処理

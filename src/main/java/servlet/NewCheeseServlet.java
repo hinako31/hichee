@@ -37,7 +37,7 @@ public class NewCheeseServlet extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("newCheese.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp");
         dispatcher.forward(request, response);
 	}
 
@@ -64,14 +64,14 @@ public class NewCheeseServlet extends HttpServlet {
 		        List<Area> areaList = areaLogic.getAllAreas();
 		        request.setAttribute("areaList", areaList);
 		        
-		        request.getRequestDispatcher("/newCheese.jsp").forward(request, response);
+		        request.getRequestDispatcher("/WEB-INF/jsp/user//newCheese.jsp").forward(request, response);
 		        return;
 		    }
 		    if ("登録".equals(step)) {
 		        Diary diary = (Diary) session.getAttribute("diary");
 		        if (diary == null) {
 		            // セッション切れなどの処理
-		            response.sendRedirect("newCheese.jsp");
+		            response.sendRedirect("/WEB-INF/jsp/user/newCheese.jsp");
 		            return;
 		        }
 		        // DiaryLogicに登録処理依頼
@@ -81,7 +81,7 @@ public class NewCheeseServlet extends HttpServlet {
 
 		        if (success) {
 		            session.removeAttribute("diary");
-		            response.sendRedirect("newCheeseResult.jsp");
+		            response.sendRedirect("/WEB-INF/jsp/user/newCheeseResult.jsp");
 		        } else {
 		            // 登録失敗時の処理
 		            request.setAttribute("errorMessage", "登録に失敗しました。再度お試しください。");
@@ -188,13 +188,13 @@ public class NewCheeseServlet extends HttpServlet {
             // セッションに入力値を保存（エラー時）
             session.setAttribute("diary", diary);
 
-            request.getRequestDispatcher("/newCheese.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp").forward(request, response);
             return;
         }
 
         // エラーなし → 入力値をセッションに保存して確認画面へリダイレクト
         session.setAttribute("diary", diary); // セッションに保存
-        request.getRequestDispatcher("/newCheeseCheck.jsp").forward(request, response); 
+        request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response); 
         // 確認画面へフォワード
 	}
 	//postの外側

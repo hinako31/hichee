@@ -19,7 +19,7 @@
 			</div><!-- msg_frame -->
 			
 			   <form action="Regist" method="post">
-			   <input type="submit" name="go" value="会員登録" class="nav_btn">
+			   <input type="submit" name="go" value="会員登録" class="nav_btn"><br>
 			   <input type="submit" name="back2" value="戻る" class="nav_btn">
 			   
 			   </form>
