@@ -51,18 +51,22 @@ public class LoginServlet extends HttpServlet {
                 request.setAttribute("error", "メールアドレスまたはパスワードが誤っています。");
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
                 dispatcher.forward(request, response);
+                System.out.println(1);
                 return;
+               
         		}
         	
         	//空欄ではない場合
         	LoginUser loginUser = new LoginUser(email,pass);//入力した値を代入
     		LoginLogic bo = new LoginLogic();
     		User user = bo.execute(loginUser);
+    		 System.out.println(2);
     		//      入力したemail、passが存在してない→user=null
             //      存在する→user=（DBに保存されている）id,name,email,passが代入 
     		
     		//一致した場合
     		if(user != null) {
+    			 System.out.println(3);
    			HttpSession session = request.getSession();
     			session.setAttribute("user", user);
     			//userセッションスコープにログインユーザー情報を保存する
@@ -79,14 +83,16 @@ public class LoginServlet extends HttpServlet {
            }
       //もし会員登録ボタンを押していたら会員登録ページに遷移
         else if ("regist".equals(action)) {
+        	 System.out.println(4);
 			 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/regist.jsp");
              dispatcher.forward(request, response);
-             System.out.println(1);
+            
              return; 
       
           }
         //検索画面、新規日記登録完了画面からマイページに遷移する
         if ("My Pageへ".equals(mypage)) {
+        	 System.out.println(5);
         	  RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/mypage.jsp");
               dispatcher.forward(request, response);
 	    }
