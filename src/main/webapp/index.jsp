@@ -7,14 +7,7 @@
 <title>Hichee ログイン/会員登録</title>
 </head>
 <body>
-<div class="outerWrapper">
-	<header class="wrapper">
-        <div class="logo">
-            <img src="${pageContext.request.contextPath}/images/ZURU ZURU Do_logo.jpg" alt="">
-        </div>
-    </header>
-    
-<main class="wrapper">
+
    Login
 	<div class="error">
 		<c:if test="${not empty error}">
