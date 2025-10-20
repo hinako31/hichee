@@ -70,18 +70,21 @@ public class LoginServlet extends HttpServlet {
                 
                 //ユーザー情報とdiary情報を取得してセッションスコープに保存後
                 //マイページに遷移
-                response.sendRedirect("mypage.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/user/mypage.jsp");
+                dispatcher.forward(request, response);
          
 	          }
-    		//もし会員登録ボタンを押していたら会員登録ページに遷移
-    		else if ("regist".equals(action)) {
-	              response.sendRedirect("regist.jsp");
-	          }
+    		
            }
-        
+      //もし会員登録ボタンを押していたら会員登録ページに遷移
+        else if ("regist".equals(action)) {
+			 RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/user/regist.jsp");
+             dispatcher.forward(request, response);
+      
+          }
         //検索画面、新規日記登録完了画面からマイページに遷移する
         if ("My Pageへ".equals(mypage)) {
-        	  RequestDispatcher dispatcher = request.getRequestDispatcher("mypage.jsp");
+        	  RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/user/mypage.jsp");
               dispatcher.forward(request, response);
 	    }
    }
