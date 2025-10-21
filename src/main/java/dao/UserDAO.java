@@ -49,7 +49,7 @@ public class UserDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         User user = null;
-        String sql = "SELECT name, email, pass FROM users WHERE email = ?";
+        String sql = "SELECT id, name, email, pass FROM users WHERE email = ?";
         try {
             conn = DBManager.getConnection();
             ps = conn.prepareStatement(sql);

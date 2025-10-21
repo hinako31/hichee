@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+   
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,8 +22,9 @@
 	<form action="Resign" method="get">
 	<input type="submit" name="resign" value="Resign(退会)" class="nav_btn">
 	</form>
-	<button type="button" onclick="history.back()" class="nav_btn">
-		<i class="fa-solid fa-arrow-rotate-left"></i>戻る</button>
+	<form action="Login" method="post">
+	<input type="submit" name="mypage" value="戻る" class="nav_btn">
+	</form>
 </main>	
 <!--フッター-->
 </body>

@@ -16,7 +16,7 @@
 		${user.name}さんがログインチュウ🐭<br>
 		ログアウトしますか？</p>
 		<form action="Logout" method="post">
-		<input type="submit" name="logout" value="ログアウト" class="nav_btn">
+		<input type="submit" name="logout" value="ログアウト" class="nav_btn"><br>
 		<button type="button" onclick="history.back()" class="nav_btn">
 		<i class="fa-solid fa-arrow-rotate-left"></i>戻る</button>
 		</form>

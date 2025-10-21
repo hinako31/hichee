@@ -94,8 +94,8 @@ public class LoginServlet extends HttpServlet {
       
           }
         //検索画面、新規日記登録完了画面からマイページに遷移する
-        if ("My Pageへ".equals(mypage)) {
-        	 System.out.println(5);
+        if ("戻る".equals(mypage) || "My Pageへ".equals(mypage)) {
+        	System.out.println(1);
         	  RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/mypage.jsp");
               dispatcher.forward(request, response);
 	    }
