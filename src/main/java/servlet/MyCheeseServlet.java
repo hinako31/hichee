@@ -66,7 +66,7 @@ public class MyCheeseServlet extends HttpServlet {
     	    request.setAttribute("searchAreaId", areaIdStr);
 
     	    // 一覧画面へフォワード
-    	    RequestDispatcher dispatcher = request.getRequestDispatcher("myCheeseList.jsp");
+    	    RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/myCheeseList.jsp");
     	    dispatcher.forward(request, response);
     	}
 
@@ -88,12 +88,12 @@ public class MyCheeseServlet extends HttpServlet {
 
         if ("My Cheese".equals(action)) {
 // マイチーズ画面に遷移
-            RequestDispatcher dispatcher = request.getRequestDispatcher("myCheese.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/myCheese.jsp");
             dispatcher.forward(request, response);
             return;
         } else if ("戻る".equals(action)) {
 // 戻るボタン（検索画面に戻る）
-            RequestDispatcher dispatcher = request.getRequestDispatcher("myCheese.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/myCheese.jsp");
             dispatcher.forward(request, response);
             return;
         } 
@@ -153,7 +153,7 @@ public class MyCheeseServlet extends HttpServlet {
             request.setAttribute("searchPeriodMonth", periodMonthStr);
             request.setAttribute("searchAreaId", areaIdStr);
 
-            request.getRequestDispatcher("/myCheeseList.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/jsp/user/myCheeseList.jsp").forward(request, response);
             return;
         }
 

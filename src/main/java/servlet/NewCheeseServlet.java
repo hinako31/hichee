@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +38,9 @@ public class NewCheeseServlet extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		AreaLogic areaLogic = new AreaLogic();
+	    List<Area> areaList = areaLogic.getOrderedAreaList(); // ← 順番付きのメソッドを使う
+	    request.setAttribute("areaList", areaList);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp");
         dispatcher.forward(request, response);
 	}
@@ -61,7 +65,7 @@ public class NewCheeseServlet extends HttpServlet {
 		        request.setAttribute("diary", diary);
 		        // エリアリストも必要ならセットする
 		        AreaLogic areaLogic = new AreaLogic();
-		        List<Area> areaList = areaLogic.getAllAreas();
+		        List<Area> areaList = areaLogic.getOrderedAreaList();
 		        request.setAttribute("areaList", areaList);
 		        
 		        request.getRequestDispatcher("/WEB-INF/jsp/user//newCheese.jsp").forward(request, response);
@@ -181,9 +185,15 @@ public class NewCheeseServlet extends HttpServlet {
             request.setAttribute("errorMessage", error.toString());
 
             // areaListの準備（DAOなどから）
-            AreaLogic areaLogic = new AreaLogic();
-            List<Area> areaList = areaLogic.getAllAreas();
-            request.setAttribute("areaList", areaList);
+            try {
+                AreaLogic areaLogic = new AreaLogic();
+                List<Area> areaList = areaLogic.getAllAreas();
+                request.setAttribute("areaList", areaList);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                request.setAttribute("areaList", null);
+                request.setAttribute("errorMessage", "エリア情報の取得中にエラーが発生しました。<br>" + error.toString());
+            }
 
             // セッションに入力値を保存（エラー時）
             session.setAttribute("diary", diary);

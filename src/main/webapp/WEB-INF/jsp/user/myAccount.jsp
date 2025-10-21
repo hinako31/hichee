@@ -21,7 +21,7 @@
 	</form>
 	<form action="Resign" method="get">
 	<input type="submit" name="resign" value="Resign(退会)" class="nav_btn">
-	</form>
+	</form><br>
 	<form action="Login" method="post">
 	<input type="submit" name="mypage" value="戻る" class="nav_btn">
 	</form>

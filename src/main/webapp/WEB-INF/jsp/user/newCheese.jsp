@@ -59,16 +59,16 @@
     </select><br>
 
     <label for="area_id">場所：</label>
-    <select name="area_id" id="area_id">
-        <c:forEach var="area" items="${areaList}">
-            <option value="${area.area_id}" 
-                <c:if test="${sessionScope.diary.area_id == area.area_id}">selected</c:if>>
-                <c:out value="${area.area_name}" />
-            </option>
-        </c:forEach>
-    </select><br>
+    <select name="area_id">
+    <option value="">選択しない</option>
+    <c:forEach var="area" items="${areaList}">
+        <option value="${area.id}" <c:if test="${param.area_id == area.id.toString()}">selected</c:if>>
+            ${area.name}
+        </option>
+    </c:forEach>
+</select><br>
 
-    <label for="review">Diary：</label>
+    <label for="review">Diary：</label><br>
     <textarea name="review" rows="5" cols="33" maxlength="1000">${fn:escapeXml(sessionScope.diary.review)}</textarea><br>
 
     <label for="img_name">画像：</label>
