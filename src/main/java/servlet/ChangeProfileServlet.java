@@ -87,25 +87,29 @@ public class ChangeProfileServlet extends HttpServlet {
 					return;
 				}
 				
-				//パスワードが入力されて、かつ4文字未満の場合
-				if (pass !=null && pass.length() < 4) {
-					System.out.println(1234);
-					request.setAttribute("error", "パスワードは4文字以上で設定してください。");
-					 User tentative = new User(user.getId(),name, email, pass);  // ID=0で仮登録
-					    session.setAttribute("tentative", tentative);
-					request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
-					return;
+				//パスワードが入力されているかチェック
+				if (pass != null && !pass.isEmpty()) {
+				    //4文字未満の場合はエラー
+				    if (pass.length() < 4) {
+				        request.setAttribute("error", "パスワードは4文字以上で設定してください。");
+				        User tentative = new User(user.getId(), name, email, pass);
+				        session.setAttribute("tentative", tentative);
+				        request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
+				        return;
+				    }
+				    //パスワードと確認用パスワードの不一致チェック
+				    if (!pass.equals(confirmPass)) {
+				        request.setAttribute("error", "パスワードが一致しません。");
+				        User tentative = new User(user.getId(), name, email, pass);
+				        session.setAttribute("tentative", tentative);
+				        request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
+				        return;
+				    }
+				} else {
+				    // パスワード未入力なら既存パスワードをtentativeにセット（変更なし）
+				    pass = user.getPass();
+				    confirmPass = user.getPass();
 				}
-				//パスワードと確認用のパスワードの不一致
-				if (pass !=null && !pass.equals(confirmPass)) {
-					System.out.println(12345);
-					request.setAttribute("error", "パスワードが一致しません。");
-					 User tentative = new User(user.getId(),name, email, pass);  // ID=0, isAdmin=0 で仮登録
-					    session.setAttribute("tentative", tentative);
-					request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
-					return;
-				}
-				
 				
 				
 				//登録するユーザー情報を設定
