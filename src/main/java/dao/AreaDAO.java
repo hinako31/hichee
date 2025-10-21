@@ -26,8 +26,8 @@ public class AreaDAO {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
-                String name = rs.getString("area_name");
-                areaList.add(new Area(id, name));
+                String area_name = rs.getString("area_name");
+                areaList.add(new Area(id, area_name));
             }
         }
 

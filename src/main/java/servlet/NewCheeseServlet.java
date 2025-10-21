@@ -42,7 +42,6 @@ public class NewCheeseServlet extends HttpServlet {
 		        AreaLogic areaLogic = new AreaLogic();
 		        List<Area> areaList = areaLogic.getOrderedAreaList();
 
-
 	        if (areaList == null) {
 	            throw new ServletException("エリアリストの取得に失敗しました（null）");
 	        }
