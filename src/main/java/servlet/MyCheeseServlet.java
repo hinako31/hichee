@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
@@ -56,16 +55,9 @@ public class MyCheeseServlet extends HttpServlet {
 
     	    request.setAttribute("diaryList", diaryList);
 
-    	 // areaListの準備（DAOなどから）
-    	    try {
-    	        AreaLogic areaLogic = new AreaLogic();
-    	        List<Area> areaList = areaLogic.getAllAreas();
-    	        request.setAttribute("areaList", areaList);
-    	    } catch (SQLException e) {
-    	        e.printStackTrace();
-    	        request.setAttribute("areaList", null);
-    	        request.setAttribute("errorMessage", "エリア情報の取得中にエラーが発生しました。<br>" );
-    	    }
+    	 AreaLogic areaLogic = new AreaLogic();
+			List<Area> areaList = areaLogic.getAllAreas();
+			request.setAttribute("areaList", areaList);
 
     	    // 検索条件もリクエストにセット（フォームに戻す用）
     	    request.setAttribute("searchName", name);
@@ -151,16 +143,9 @@ public class MyCheeseServlet extends HttpServlet {
 
             request.setAttribute("diaryList", diaryList);
 
-         // areaListの準備（DAOなどから）
-            try {
-                AreaLogic areaLogic = new AreaLogic();
-                List<Area> areaList = areaLogic.getAllAreas();
-                request.setAttribute("areaList", areaList);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                request.setAttribute("areaList", null);
-                request.setAttribute("errorMessage", "エリア情報の取得中にエラーが発生しました。<br>");
-            }
+         AreaLogic areaLogic = new AreaLogic();
+			List<Area> areaList = areaLogic.getAllAreas();
+			request.setAttribute("areaList", areaList);
 
             // 検索条件もリクエストにセット（フォームの初期値に使用）
             request.setAttribute("searchName", name);
