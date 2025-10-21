@@ -48,6 +48,7 @@ public class NewCheeseServlet extends HttpServlet {
 	        }
 
 	        request.setAttribute("areaList", areaList);
+	       
 	        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp");
 	        dispatcher.forward(request, response);
 	    } catch (Exception e) {
