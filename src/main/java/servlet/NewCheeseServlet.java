@@ -38,14 +38,23 @@ public class NewCheeseServlet extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		AreaLogic areaLogic = new AreaLogic();
-	    List<Area> areaList = areaLogic.getOrderedAreaList(); // ← 順番付きのメソッドを使う
-	    request.setAttribute("areaList", areaList);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp");
-        dispatcher.forward(request, response);
+		 try {
+		        AreaLogic areaLogic = new AreaLogic();
+		        List<Area> areaList = areaLogic.getOrderedAreaList();
+
+
+	        if (areaList == null) {
+	            throw new ServletException("エリアリストの取得に失敗しました（null）");
+	        }
+
+	        request.setAttribute("areaList", areaList);
+	        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp");
+	        dispatcher.forward(request, response);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "エリア情報の取得に失敗しました");
+	    }
 	}
-
-
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 request.setCharacterEncoding("UTF-8");

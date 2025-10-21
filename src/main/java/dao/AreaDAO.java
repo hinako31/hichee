@@ -17,7 +17,7 @@ public class AreaDAO {
     private final static String DB_PASS = "password";
 
     // static を外す
-    public static List<Area> getAllAreas() throws SQLException {
+    public List<Area> getAllAreas() throws SQLException {
         List<Area> areaList = new ArrayList<>();
         String sql = "SELECT id, area_name FROM areas";
 
