@@ -78,6 +78,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("diaryList", diaryList);
 
                 request.getRequestDispatcher("/WEB-INF/jsp/user/mypage.jsp").forward(request, response);
+                return;
 
             } catch (SQLException e) {
                 throw new ServletException("ログイン処理中にエラーが発生しました", e);
@@ -98,6 +99,7 @@ public class LoginServlet extends HttpServlet {
         	System.out.println(1);
         	  RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/mypage.jsp");
               dispatcher.forward(request, response);
+              return;
 	    }
    }
 }
