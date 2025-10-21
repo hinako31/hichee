@@ -16,14 +16,14 @@
         	
 				<p>ニックネーム：${sessionScope.tentative.name}<br>
 				       メールアドレス：${sessionScope.tentative.email}<br>
-				       パスワード：<c:choose>
-     <c:when test="${empty sessionScope.tentative.pass}">
-       変更なし
-     </c:when>
-     <c:otherwise>
-       ******（表示しません）
-     </c:otherwise>
-   </c:choose><br>
+				       パスワード： <c:choose>
+    <c:when test="${not sessionScope.isPasswordChanged}">
+      変更なし
+    </c:when>
+    <c:otherwise>
+      ******（表示しません）
+    </c:otherwise>
+  </c:choose><br>
 				</p>
 			<!-- msg_frame -->
 			
