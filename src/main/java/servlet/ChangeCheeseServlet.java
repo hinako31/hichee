@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
@@ -61,9 +62,16 @@ public class ChangeCheeseServlet extends HttpServlet {
 		        Diary diary = (Diary) session2.getAttribute("tentative");
 		        request.setAttribute("tentative", diary);
 		        // エリアリストも必要ならセットする
-		        AreaLogic areaLogic = new AreaLogic();
-		        List<Area> areaList = areaLogic.getAllAreas();
-		        request.setAttribute("areaList", areaList);
+		     // areaListの準備（DAOなどから）
+		        try {
+		            AreaLogic areaLogic = new AreaLogic();
+		            List<Area> areaList = areaLogic.getAllAreas();
+		            request.setAttribute("areaList", areaList);
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		            request.setAttribute("areaList", null);
+		            request.setAttribute("errorMessage", "エリア情報の取得中にエラーが発生しました。<br>");
+		        }
 		        
 		        request.getRequestDispatcher("/WEB-INF/jsp/user/changeCheese.jsp").forward(request, response);
 		        return;
@@ -207,10 +215,16 @@ public class ChangeCheeseServlet extends HttpServlet {
             if (error.length() > 0) {
                 request.setAttribute("errorMessage", error.toString());
 
-                // areaListの準備（DAOなどから）
-                AreaLogic areaLogic = new AreaLogic();
-                List<Area> areaList = areaLogic.getAllAreas();
-                request.setAttribute("areaList", areaList);
+             // areaListの準備（DAOなどから）
+                try {
+                    AreaLogic areaLogic = new AreaLogic();
+                    List<Area> areaList = areaLogic.getAllAreas();
+                    request.setAttribute("areaList", areaList);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    request.setAttribute("areaList", null);
+                    request.setAttribute("errorMessage", "エリア情報の取得中にエラーが発生しました。<br>" + error.toString());
+                }
 
                 // セッションに入力値を保存（エラー時）
                 session.setAttribute("tentative", diary);

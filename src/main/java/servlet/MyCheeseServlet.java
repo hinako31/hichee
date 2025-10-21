@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import model.Area;
 import model.Diary;
 import model.User;
 import service.AreaLogic;
@@ -54,10 +56,16 @@ public class MyCheeseServlet extends HttpServlet {
 
     	    request.setAttribute("diaryList", diaryList);
 
-    	    // エリアリスト取得
-    	    AreaLogic areaLogic = new AreaLogic();
-    	    List<model.Area> areaList = areaLogic.getAllAreas();
-    	    request.setAttribute("areaList", areaList);
+    	 // areaListの準備（DAOなどから）
+    	    try {
+    	        AreaLogic areaLogic = new AreaLogic();
+    	        List<Area> areaList = areaLogic.getAllAreas();
+    	        request.setAttribute("areaList", areaList);
+    	    } catch (SQLException e) {
+    	        e.printStackTrace();
+    	        request.setAttribute("areaList", null);
+    	        request.setAttribute("errorMessage", "エリア情報の取得中にエラーが発生しました。<br>" );
+    	    }
 
     	    // 検索条件もリクエストにセット（フォームに戻す用）
     	    request.setAttribute("searchName", name);
@@ -143,9 +151,16 @@ public class MyCheeseServlet extends HttpServlet {
 
             request.setAttribute("diaryList", diaryList);
 
-            AreaLogic areaLogic = new AreaLogic();
-            List<model.Area> areaList = areaLogic.getAllAreas();
-            request.setAttribute("areaList", areaList);
+         // areaListの準備（DAOなどから）
+            try {
+                AreaLogic areaLogic = new AreaLogic();
+                List<Area> areaList = areaLogic.getAllAreas();
+                request.setAttribute("areaList", areaList);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                request.setAttribute("areaList", null);
+                request.setAttribute("errorMessage", "エリア情報の取得中にエラーが発生しました。<br>");
+            }
 
             // 検索条件もリクエストにセット（フォームの初期値に使用）
             request.setAttribute("searchName", name);
