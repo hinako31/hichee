@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.AreaDAO;
@@ -13,16 +14,14 @@ public class AreaLogic {
         return dao.getAllAreas(); // ← static じゃなくなったのでこれでOK
     }
 
-	    public List<Area> getOrderedAreaList() {
-	        AreaDAO dao = new AreaDAO();
-	        try {
-	            return dao.getOrderedAreaList(); // インスタンスメソッド呼び出し
-	        }  catch (SQLException e) {
-	            System.err.println("エリア一覧の取得中にエラー発生: " + e.getMessage());
-	            e.printStackTrace(); // これ重要！
-	            return null;
-	        }
-
+	public List<Area> getOrderedAreaList() {
+	    try {
+	    	 AreaDAO dao = new AreaDAO();
+	    	  return dao.getAllAreas();  // sort_orderで並んでくる
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return new ArrayList<>(); // nullじゃなくて空リストにしておくと安全
 	    }
+	}
 
 }		
