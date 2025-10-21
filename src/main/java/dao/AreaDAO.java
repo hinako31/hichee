@@ -27,7 +27,10 @@ public class AreaDAO {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String area_name = rs.getString("area_name");
-                areaList.add(new Area(id, area_name));
+                int sort_order = rs.getInt("sort_order");
+                Area area = new Area(id, area_name);
+                area.setSort_order(sort_order);
+                areaList.add(area);
             }
         }
 

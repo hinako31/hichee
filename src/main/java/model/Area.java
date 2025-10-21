@@ -16,6 +16,11 @@ public class Area implements Serializable {
 	        this.id = id;
 	        this.area_name = area_name;
 	    }
+	    public Area(int id, String area_name,int sort_order) {
+	        this.id = id;
+	        this.area_name = area_name;
+	        this.sort_order =sort_order;
+	    }
 
 	    // getter / setter
 	    public int getId() {
