@@ -56,9 +56,10 @@ public class UserDAO {
             rs = ps.executeQuery();
             if (rs.next()) {//emailが存在したら
                 User user = new User();
-                user.setEmail(rs.getString("name"));//ユーザー情報取得する
-                user.setName(rs.getString("email"));
-                user.setPass(rs.getString("pass"));
+                user.setName(rs.getString("name"));       // ✔ ニックネームを正しくセット
+                user.setEmail(rs.getString("email"));     // ✔ メールを正しくセット
+                user.setPass(rs.getString("pass"));       // ✔ パスワードを正しくセット
+                
                 return user;//null→userに変える
             } else {
                 return null;//該当するメールアドレスがなかったらnullのまま返す

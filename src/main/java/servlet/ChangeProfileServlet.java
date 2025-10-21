@@ -69,15 +69,20 @@ public class ChangeProfileServlet extends HttpServlet {
 			String email = request.getParameter("email");
 			String pass = request.getParameter("pass");
 			String confirmPass = request.getParameter("confirmPass");
-									
+			User user = (User) session.getAttribute("user");
 				// 1. 入力チェック
 				//名前かemailが未入力の場合
 				if (name == null || name.isEmpty() ||
 						email == null || email.isEmpty() ) {
-					System.out.println(123);
+					
 					request.setAttribute("error", "未入力項目があります。");
-					 User tentative = new User(name, email, pass);//ID必要？
-					    session.setAttribute("tentative", tentative);
+					User tentative = new User();
+				    tentative.setId(user.getId());
+				    tentative.setName(name);
+				    tentative.setEmail(email);
+				    tentative.setPass(pass);
+				    tentative.setConfirmPass(confirmPass);
+				    session.setAttribute("tentative", tentative);
 					request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
 					return;
 				}
@@ -86,7 +91,7 @@ public class ChangeProfileServlet extends HttpServlet {
 				if (pass !=null && pass.length() < 4) {
 					System.out.println(1234);
 					request.setAttribute("error", "パスワードは4文字以上で設定してください。");
-					 User tentative = new User(name, email, pass);  // ID=0で仮登録
+					 User tentative = new User(user.getId(),name, email, pass);  // ID=0で仮登録
 					    session.setAttribute("tentative", tentative);
 					request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
 					return;
@@ -95,20 +100,26 @@ public class ChangeProfileServlet extends HttpServlet {
 				if (pass !=null && !pass.equals(confirmPass)) {
 					System.out.println(12345);
 					request.setAttribute("error", "パスワードが一致しません。");
-					 User tentative = new User(name, email, pass);  // ID=0, isAdmin=0 で仮登録
+					 User tentative = new User(user.getId(),name, email, pass);  // ID=0, isAdmin=0 で仮登録
 					    session.setAttribute("tentative", tentative);
 					request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
 					return;
 				}
 				
 				
-				//入力エラーがなかったら
-				User loginUser = (User) session.getAttribute("user");
+				
 				//登録するユーザー情報を設定
-				User user = new User(loginUser.getId(), email, pass, name);
-
+				User tentative = new User();
+				System.out.println("tentative name: " + tentative.getName());
+				System.out.println("tentative email: " + tentative.getEmail());
+				System.out.println("tentative pass: " + tentative.getPass());
+				tentative.setId(user.getId());
+				tentative.setName(name);
+				tentative.setEmail(email);
+				tentative.setPass(pass);
+				tentative.setConfirmPass(confirmPass);
 				//セッションスコープに登録ユーザーを保存
-				session.setAttribute("tentative", user);
+				session.setAttribute("tentative", tentative);				
 
 				//確認画面へフォワード
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfileCheck.jsp");
@@ -129,11 +140,8 @@ public class ChangeProfileServlet extends HttpServlet {
 			//確認画面のボタンの分岐	
 				// ② 「戻る」ボタン押下
 				if ("戻る".equals(step)) {
-					System.out.println(1234567);
-					request.setAttribute("name", user.getName());
-					request.setAttribute("email", user.getEmail());
-					request.setAttribute("pass", user.getPass());
-					request.setAttribute("confirmPass", user.getConfirmPass());
+					User tentative = (User) session.getAttribute("tentative");
+					request.setAttribute("tentative", tentative);
 					//フォワード
 					RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp");
 					dispatcher.forward(request, response);
@@ -142,14 +150,19 @@ public class ChangeProfileServlet extends HttpServlet {
 				
 				// ③ 「変更する」ボタン押下
 				if ("変更".equals(step)) {
-					System.out.println(12345678);
 					try {
-						boolean success = registLogic.updateUser(user);//←にDAOに変更指示の命令を記載
-						if (success) {//変更がうまくいけばTrue
-							System.out.println(1);
-							// 登録成功 → セッションにログインユーザー保存
-							session.setAttribute("user", user);//userセッション上書き
-							session.removeAttribute("tentative");//仮セッション削除
+						  // ✅ ここでtentativeを使うのが正解！
+				        User tentative = (User) session.getAttribute("tentative");
+
+				        // ✅ DAO呼び出しにもtentativeを使う
+				        boolean success = registLogic.updateUser(tentative);
+
+				        if (success) {
+				            // ✅ セッション上のuserを上書き
+				            session.setAttribute("user", tentative);
+
+				            // ✅ tentativeは不要なので削除
+				            session.removeAttribute("tentative");
 							//フォワード
 							RequestDispatcher dispatcher = request
 									.getRequestDispatcher("/WEB-INF/jsp/user/changeProfileResult.jsp");
