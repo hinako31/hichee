@@ -41,12 +41,17 @@ public class NewCheeseServlet extends HttpServlet {
 		 try {
 		        AreaLogic areaLogic = new AreaLogic();
 		        List<Area> areaList = areaLogic.getOrderedAreaList();
+		        System.out.println("areaList size: " + areaList.size());
+		        for (Area a : areaList) {
+		            System.out.println("Area: id=" + a.getId() + ", name=" + a.getArea_name());
+		        }
 
-	        if (areaList == null) {
-	            throw new ServletException("エリアリストの取得に失敗しました（null）");
-	        }
 
 	        request.setAttribute("areaList", areaList);
+
+//	        if (areaList == null) {
+//	            throw new ServletException("エリアリストの取得に失敗しました（null）");
+//	        }
 	       
 	        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp");
 	        dispatcher.forward(request, response);
@@ -54,6 +59,7 @@ public class NewCheeseServlet extends HttpServlet {
 	        e.printStackTrace();
 	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "エリア情報の取得に失敗しました");
 	    }
+		 
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
