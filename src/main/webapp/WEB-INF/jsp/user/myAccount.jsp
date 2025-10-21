@@ -14,10 +14,10 @@
 <input type="submit" name="changeprofile" value="Change Profile" class="nav_btn">
 </form>
 </form>
-	<form action="Loout" method="get">
+	<form action="Logout" method="get">
 	<input type="submit" name="logout" value="Logout" class="nav_btn">
 	</form>
-	<form action="Resin" method="get">
+	<form action="Resign" method="get">
 	<input type="submit" name="resign" value="Resign(退会)" class="nav_btn">
 	</form>
 	<button type="button" onclick="history.back()" class="nav_btn">

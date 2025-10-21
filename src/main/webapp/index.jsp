@@ -13,8 +13,8 @@
    Login
 	<div class="error">
 		<c:if test="${not empty error}">
-	    	<p style="color:red;">${error}</p>
-		</c:if>
+    <p style="color:red;">${error}</p>
+</c:if>
 	</div>
 <!--	ログインサーブレットで分岐処理-->
 	<div class="loginform">

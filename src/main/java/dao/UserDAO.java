@@ -48,29 +48,51 @@ public class UserDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        User user = null;
+        String sql = "SELECT name, email, pass FROM users WHERE email = ?";
         try {
             conn = DBManager.getConnection();
-            String sql = "SELECT name, email, pass FROM users WHERE email = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, email);
             rs = ps.executeQuery();
             if (rs.next()) {//emailが存在したら
-                User user = new User();
-                user.setName(rs.getString("name"));       // ✔ ニックネームを正しくセット
-                user.setEmail(rs.getString("email"));     // ✔ メールを正しくセット
-                user.setPass(rs.getString("pass"));       // ✔ パスワードを正しくセット
-                
-                return user;//null→userに変える
-            } else {
-                return null;//該当するメールアドレスがなかったらnullのまま返す
+            	int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String pass = rs.getString("pass");
+
+                user = new User(id, name, email, pass); 
+            } 
+        } finally{
+            // ResultSet を閉じる
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-        } finally {
-            if (rs != null) try { rs.close(); } catch(Exception e){}
-            if (ps != null) try { ps.close(); } catch(Exception e){}
-            if (conn != null) try { conn.close(); } catch(Exception e){}
+
+            // PreparedStatement を閉じる
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Connection を閉じる
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+        return user;
     }
-    
     //会員登録内容をテーブルに追加する
     public boolean insert(User user) throws SQLException {
         Connection conn = null;
