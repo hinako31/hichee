@@ -76,7 +76,7 @@ public class ChangeProfileServlet extends HttpServlet {
 						email == null || email.isEmpty() ) {
 					System.out.println(123);
 					request.setAttribute("error", "未入力項目があります。");
-					 User tentative = new User(name, pass, email);//ID必要？
+					 User tentative = new User(name, email, pass);//ID必要？
 					    session.setAttribute("tentative", tentative);
 					request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
 					return;
@@ -86,7 +86,7 @@ public class ChangeProfileServlet extends HttpServlet {
 				if (pass !=null && pass.length() < 4) {
 					System.out.println(1234);
 					request.setAttribute("error", "パスワードは4文字以上で設定してください。");
-					 User tentative = new User(name,pass,email);  // ID=0で仮登録
+					 User tentative = new User(name, email, pass);  // ID=0で仮登録
 					    session.setAttribute("tentative", tentative);
 					request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
 					return;
@@ -95,7 +95,7 @@ public class ChangeProfileServlet extends HttpServlet {
 				if (pass !=null && !pass.equals(confirmPass)) {
 					System.out.println(12345);
 					request.setAttribute("error", "パスワードが一致しません。");
-					 User tentative = new User(name, pass,email);  // ID=0, isAdmin=0 で仮登録
+					 User tentative = new User(name, email, pass);  // ID=0, isAdmin=0 で仮登録
 					    session.setAttribute("tentative", tentative);
 					request.getRequestDispatcher("/WEB-INF/jsp/user/changeProfile.jsp").forward(request, response);
 					return;

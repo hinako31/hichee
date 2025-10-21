@@ -17,7 +17,7 @@ public class UserDAO {
 
         try(Connection conn = DBManager.getConnection()) {
             // SELECT文を準備
-            String sql ="SELECT id,name,pass,email FROM users WHERE email=? AND pass=?";
+            String sql ="SELECT id,name,email,pass FROM users WHERE email=? AND pass=?";
             PreparedStatement pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, loginUser.getEmail());//ユーザーが入力したemailをSELECT文の1番目のパラメータemail=?に
             pStmt.setString(2, loginUser.getPass());//ユーザーが入力したパスワードを2番目のパラメータに
@@ -29,8 +29,9 @@ public class UserDAO {
             if (rs.next()) {//検索結果に該当ユーザーがいたら中の処理をする
                 int id = rs.getInt("id");//ユーザー情報取得して代入
                 String email = rs.getString("email");
-                String pass = rs.getString("pass");
                 String name = rs.getString("name");
+                String pass = rs.getString("pass");
+                
           
                 user = new User(id, name , email , pass);
                 //代入したものをUserのthis.〇〇＝〇〇に代入→データベースの情報をセット
@@ -49,15 +50,15 @@ public class UserDAO {
         ResultSet rs = null;
         try {
             conn = DBManager.getConnection();
-            String sql = "SELECT name, pass, email FROM users WHERE email = ?";
+            String sql = "SELECT name, email, pass FROM users WHERE email = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, email);
             rs = ps.executeQuery();
             if (rs.next()) {//emailが存在したら
                 User user = new User();
                 user.setEmail(rs.getString("name"));//ユーザー情報取得する
-                user.setPass(rs.getString("pass"));
                 user.setName(rs.getString("email"));
+                user.setPass(rs.getString("pass"));
                 return user;//null→userに変える
             } else {
                 return null;//該当するメールアドレスがなかったらnullのまま返す
@@ -75,11 +76,11 @@ public class UserDAO {
         PreparedStatement ps = null;
         try {
             conn = DBManager.getConnection();
-            String sql = "INSERT INTO users(name, pass, email) VALUES(? , ? , ?)";
+            String sql = "INSERT INTO users(name, email, pass) VALUES(? , ? , ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, user.getName());
-            ps.setString(2, user.getPass());
-            ps.setString(3, user.getEmail());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPass());
             int r = ps.executeUpdate();
             return (r == 1);
         } finally {
@@ -89,15 +90,15 @@ public class UserDAO {
     }
     //ユーザー情報変更
     public boolean update(User user) throws SQLException {
-        String sql = "UPDATE users SET name = ?, pass = ?, email = ? WHERE id = ?";
+        String sql = "UPDATE users SET name = ?, email = ?, pass = ? WHERE id = ?";
         try (Connection conn = DBManager.getConnection();	
              PreparedStatement stmt = conn.prepareStatement(sql)) {
         	
         	 conn.setAutoCommit(false);  // 明示的にOFFにするなら（OFFなら不要）
         	 
             stmt.setString(1, user.getName());
-            stmt.setString(2, user.getPass());
-            stmt.setString(3, user.getEmail());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPass());
             stmt.setInt(4, user.getId());
 
             int affectedRows = stmt.executeUpdate();

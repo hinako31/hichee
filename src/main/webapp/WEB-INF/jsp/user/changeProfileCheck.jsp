@@ -14,10 +14,10 @@
         <h2>Change Profile</h2>
 		<p class="msg_info">下記の内容で変更しますか？🐭</p>
         	
-				<p>名前：${sessionScope.tentative.name}<br>
+				<p>ニックネーム：${sessionScope.tentative.name}<br>
 				       メールアドレス：${sessionScope.tentative.email}<br>
 				       パスワード：<c:choose>
-     <c:when test="${empty sessionScope.tentative.password}">
+     <c:when test="${empty sessionScope.tentative.pass}">
        変更なし
      </c:when>
      <c:otherwise>
