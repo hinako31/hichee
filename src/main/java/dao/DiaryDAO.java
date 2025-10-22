@@ -1,7 +1,6 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,19 +11,15 @@ import model.Diary;
 
 public class DiaryDAO {
 
-    private final String JDBC_URL = "jdbc:mysql://localhost:3306/hichee?useSSL=false&serverTimezone=UTC";
-    private final String DB_USER = "root";
-    private final String DB_PASS = "root";
-
     //ログインしたときのDiary記録取得
-    public List<Diary> findByUserId(int user_id) {
+    public List<Diary> findByUserId(int user_id) throws SQLException {
         List<Diary> diaryList = new ArrayList<>();
 
-        try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
+        try(Connection conn = DBManager.getConnection()) {
             String sql = "SELECT id, name, period_year, period_month, user_id, area_id, file_name, file_path, review, created_at, updated_at FROM diaries WHERE user_id = ? ORDER BY created_at DESC";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, user_id);
-                ResultSet rs = stmt.executeQuery();
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setInt(1, user_id);
+                ResultSet rs = pStmt.executeQuery();
 
                 while (rs.next()) {
                     Diary diary = new Diary();
@@ -42,14 +37,12 @@ public class DiaryDAO {
 
                     diaryList.add(diary);
                 }
-            }
-        } catch (SQLException e) {
+            }catch (SQLException e) {
+            System.err.println("DBからのエリア取得に失敗: " + e.getMessage());
             e.printStackTrace();
         }
-
         return diaryList;
     }
-
     //退会時お気に入り削除
 	public boolean deleteDiary(int userId) {
     	String sql = "DELETE FROM diaries WHERE user_id = ?";
