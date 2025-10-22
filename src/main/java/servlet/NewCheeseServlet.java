@@ -63,6 +63,8 @@ public class NewCheeseServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 request.setCharacterEncoding("UTF-8");
+		 
+		 
 		 HttpSession session2 = request.getSession();
 		 User user = (User) session2.getAttribute("user");
 
@@ -72,7 +74,10 @@ public class NewCheeseServlet extends HttpServlet {
 		     return;
 		 }
 		 HttpSession session = request.getSession();
-		//確認画面からの分岐
+		 
+		 System.out.println("diary=" + session.getAttribute("diary"));
+		
+		 //確認画面からの分岐
 		 String step = request.getParameter("step");
 		  if ("戻る".equals(step)) {
 		        Diary diary = (Diary) session.getAttribute("diary");
@@ -86,17 +91,21 @@ public class NewCheeseServlet extends HttpServlet {
 		        return;
 		    }
 		    if ("作成".equals(step)) {
-		        Diary diary = (Diary) session.getAttribute("diary");
+		    	System.out.println("doPostが呼ばれました。step=" + step);
+		    	Diary diary = (Diary) session.getAttribute("diary");
+		    	System.out.println("diary from session: " + diary);
+		    	
 		        if (diary == null) {
 		            // セッション切れなどの処理
-		            response.sendRedirect("/WEB-INF/jsp/user/newCheese.jsp");
+		        	response.sendRedirect("NewCheese");
 		            return;
 		        }
 		        // DiaryLogicに登録処理依頼
 		        DiaryLogic diaryLogic = new DiaryLogic();
 		      
 		        boolean success = diaryLogic.registerDiary(diary, user.getId());
-
+		        System.out.println("登録結果 success = " + success);
+		        
 		        if (success) {
 		            session.removeAttribute("diary");
 		            response.sendRedirect("NewCheeseResult");  // 完了画面を表示するサーブレットかJSPのURLへリダイレクト
@@ -104,9 +113,32 @@ public class NewCheeseServlet extends HttpServlet {
 		        }else {
 		            // 登録失敗時の処理
 		            request.setAttribute("errorMessage", "登録に失敗しました。再度お試しください。");
+		            Integer memorialYear = diary.getPeriod_year();
+		            Integer memorialMonth = diary.getPeriod_month();
+		            Integer areaId = diary.getArea_id();
+
+		            String memorialYearDisplay = (memorialYear != null) ? memorialYear.toString() : "不明";
+		            String memorialMonthDisplay = (memorialMonth != null) ? memorialMonth.toString() : "不明";
+
+		            AreaLogic areaLogic = new AreaLogic();
+		            List<Area> areaList = areaLogic.getAllAreas();
+		            String areaName = "不明";
+		            if (areaId != null) {
+		                for (Area area : areaList) {
+		                    if (area.getId() == areaId) {
+		                        areaName = area.getArea_name();
+		                        break;
+		                    }
+		                }
+		            }
+		            request.setAttribute("memorialYearDisplay", memorialYearDisplay);
+		            request.setAttribute("memorialMonthDisplay", memorialMonthDisplay);
+		            request.setAttribute("areaName", areaName);
+
 		            request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response);
+		            return;
 		        }
-		        return;
+		      
 		    }
 
 		 
