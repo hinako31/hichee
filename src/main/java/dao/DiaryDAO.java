@@ -208,15 +208,17 @@ public class DiaryDAO {
 	}
 
 	//詳細画面に行くときのdiary情報取得の指示
-	public Diary findById(int id) {
+	public Diary findById(int id, int userId) {
 	    Diary diary = null;
 
-	    String sql = "SELECT * FROM diaries WHERE id = ?";
+	    String sql = "SELECT * FROM diaries WHERE id = ? AND user_id = ?";
 
 	    try (Connection conn = DBManager.getConnection();
 	         PreparedStatement ps = conn.prepareStatement(sql)) {
 
 	        ps.setInt(1, id);
+	        ps.setInt(2, userId);
+
 	        ResultSet rs = ps.executeQuery();
 
 	        if (rs.next()) {
@@ -239,6 +241,7 @@ public class DiaryDAO {
 
 	    return diary;
 	}
+
 	
 
 

@@ -181,7 +181,8 @@ public class MyCheeseServlet extends HttpServlet {
                 try {
                     int id = Integer.parseInt(idStr);
                     DiaryLogic diaryLogic = new DiaryLogic();
-                    Diary diary = diaryLogic.getDiaryById(id);
+                    int userId = user.getId();
+                    Diary diary = diaryLogic.getDiaryById(id, userId);
 
                  // ここでエリア名を取得してリクエスト属性にセット
                  AreaLogic areaLogic = new AreaLogic();

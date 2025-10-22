@@ -73,17 +73,11 @@
     <p>Cheese Diaryを表示チュウ🐭</p><br>
         <div class="diary-container">
         <%
-        for (Diary diary : diaryList) {
-            String imagePath = "noimage.png";
-            if (diary.getFile_path() != null && diary.getFile_name() != null) {
-                imagePath = request.getContextPath() + "/" + diary.getFile_path() + "/" + diary.getFile_name();
-            } else {
-                imagePath = request.getContextPath() + "/images/noimage.png"; // noimageの場所に合わせて変更
-            }
-
+            for (Diary diary : diaryList) {
         %>
             <div class="diary-card">
-                <img src="<%= imagePath %>" alt="店舗画像">
+               <!-- 画像は非表示にしました -->
+
                 <h3><%= diary.getName() %></h3>
 
                 <form action="MyCheese" method="post">

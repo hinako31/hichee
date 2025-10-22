@@ -43,10 +43,9 @@ public class DiaryLogic {
 	    }
 
 	    
-		//詳細画面に行くときのdiary情報取得の指示
-	    public Diary getDiaryById(int id) {
+	    public Diary getDiaryById(int id, int userId) {
 	        DiaryDAO dao = new DiaryDAO();
-	        return dao.findById(id);
+	        return dao.findById(id, userId);
 	    }
 
 		

@@ -5,7 +5,6 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -92,26 +91,44 @@ public class ChangeCheeseServlet extends HttpServlet {
 
 		
         //マイチーズの詳細のChangeCheeseボタンをおしたとき
-        if ("ChangeCheese".equals(action)) {
+		    if ("editForm".equals(action)) {
         	// 詳細表示
             String idStr = request.getParameter("id");
+            
+            System.out.println("取得したid: " + idStr);
+            
             if (idStr != null && !idStr.isEmpty()) {
                 try {
                     int id = Integer.parseInt(idStr);
         	DiaryLogic diaryLogic = new DiaryLogic();
-            Diary diary = diaryLogic.getDiaryById(id);
-            request.setAttribute("tentative", diary);
-       	 System.out.println(4);
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/changeCheese.jsp");
-            dispatcher.forward(request, response);
-                }
-                catch (NumberFormatException e) {
-                    // 不正なIDの場合の処理
-                    response.sendRedirect("MyCheese");
-                    return;
-                }
-            } else {
-                response.sendRedirect("MyCheese");
+        	
+        	int userId = user.getId();
+
+        	Diary diary = diaryLogic.getDiaryById(id, userId);
+
+            
+            System.out.println("取得したDiary: " + diary); 
+            if (diary == null) {
+                System.out.println("Diaryが見つかりませんでした。id=" + id);
+                response.sendRedirect("MyCheese");  // or エラーページに
+                return;
+            }
+
+            HttpSession session3 = request.getSession();
+            session3.setAttribute("tentative", diary);  // ✅ 必須
+
+            // 必要ならエリアリストもセット
+            AreaLogic areaLogic = new AreaLogic();
+            List<Area> areaList = areaLogic.getAllAreas();
+            session3.setAttribute("areaList", areaList);
+
+            request.getRequestDispatcher("/WEB-INF/jsp/user/changeCheese.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            response.sendRedirect("MyCheese");
+        }
+    } else {
+        response.sendRedirect("MyCheese");
+   
                 return;
             }
         } 

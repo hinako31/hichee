@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ page import="model.Diary" %>
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     Diary diary = (Diary) request.getAttribute("tentative");
     if (diary == null) {
@@ -39,7 +40,7 @@
         <c:forEach var="year" begin="2015" end="2027">
             <c:if test="${year <= currentYear}">
                 <option value="${year}" 
-                    <c:if test="${sessionScope.tentative.memorial_year == year}">selected</c:if>>${year}</option>
+                    <c:if test="${sessionScope.tentative.period_year == year}">selected</c:if>>${year}</option>
             </c:if>
         </c:forEach>
     </select><br>
@@ -49,11 +50,11 @@
         <option value="">分からない</option>
         <c:forEach var="month" begin="1" end="12">
             <c:set var="monthStr" value="${month < 10 ? '0' + month : month}" />
-            <c:if test="${sessionScope.tentative.memorial_year lt currentYear || 
-                         (sessionScope.tentative.memorial_year == currentYear && month <= currentMonth) || 
-                         sessionScope.tentative.memorial_year == null}">
+            <c:if test="${sessionScope.tentative.period_year lt currentYear || 
+                         (sessionScope.tentative.period_year == currentYear && month <= currentMonth) || 
+                         sessionScope.tentative.period_year == null}">
                 <option value="${monthStr}" 
-                    <c:if test="${sessionScope.tentative.memorial_month == monthStr}">selected</c:if>>${month}</option>
+                    <c:if test="${sessionScope.tentative.period_month == monthStr}">selected</c:if>>${month}</option>
             </c:if>
         </c:forEach>
     </select><br>
@@ -72,8 +73,14 @@
     <textarea name="review" rows="5" cols="33" maxlength="1000">${fn:escapeXml(sessionScope.tentative.review)}</textarea><br>
 
     <label for="img_name">画像：</label>
-    <img id="preview" src="<c:out value='${sessionScope.diary.img_name != null ? "upload/" + sessionScope.tentative.img_name : "images/no_image.png"}'/>" alt=""><br>
-    <input type="file" name="img_name" id="image"><br>
+   <c:choose>
+    <c:when test="${not empty sessionScope.tentative.file_name}">
+        <img id="preview" src="upload/${sessionScope.tentative.file_name}" alt="画像">
+    </c:when>
+    <c:otherwise>
+        <img id="preview" src="images/no_image.png" alt="No Image">
+    </c:otherwise>
+</c:choose><br>
 
     <input type="submit" name="action" value="確認">
 	
