@@ -30,46 +30,62 @@ public class MyCheeseServlet extends HttpServlet {
     }
 
 	
-     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	    HttpSession session = request.getSession();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
 
-    	    // セッションから検索条件を取得
-    	    String name = (String) session.getAttribute("searchName");
-    	    Integer periodYearStr = (Integer) session.getAttribute("searchPeriodYear");
-    	    Integer periodMonthStr = (Integer) session.getAttribute("searchPeriodMonth");
-    	    Integer areaIdStr= (Integer) session.getAttribute("searchAreaId");
+        // セッションから検索条件を取得（Stringとして取り出す）
+        String name = (String) session.getAttribute("searchName");
+        String periodYearStr = (String) session.getAttribute("searchPeriodYear");
+        String periodMonthStr = (String) session.getAttribute("searchPeriodMonth");
+        String areaIdStr = (String) session.getAttribute("searchAreaId");
 
-    	    // ログインユーザーの取得
-    	    User user = (User) session.getAttribute("user");
-    	    if (user == null) {
-    	        response.sendRedirect("index.jsp");
-    	        return;
-    	    }
+        Integer periodYear = null;
+        Integer periodMonth = null;
+        Integer areaId = null;
 
-    	    // 検索条件を使ってDiaryLogicで検索
-    	    DiaryLogic diaryLogic = new DiaryLogic();
-    	    List<Diary> diaryList = diaryLogic.searchDiaries(user.getId(), name, 
-    	    		periodYearStr != null ? periodYearStr.toString() : null, 
-    	    				periodMonthStr != null ? periodMonthStr.toString() : null, 
-    	    						areaIdStr != null ? areaIdStr.toString() : null);
+        try {
+            if (periodYearStr != null && !periodYearStr.isEmpty()) {
+                periodYear = Integer.valueOf(periodYearStr);
+            }
+            if (periodMonthStr != null && !periodMonthStr.isEmpty()) {
+                periodMonth = Integer.valueOf(periodMonthStr);
+            }
+            if (areaIdStr != null && !areaIdStr.isEmpty()) {
+                areaId = Integer.valueOf(areaIdStr);
+            }
+        } catch (NumberFormatException e) {
+            // 必要ならログなどを出す
+            e.printStackTrace();
+        }
 
-    	    request.setAttribute("diaryList", diaryList);
+        // ログインユーザーの取得
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            response.sendRedirect("index.jsp");
+            return;
+        }
 
-    	 AreaLogic areaLogic = new AreaLogic();
-			List<Area> areaList = areaLogic.getAllAreas();
-			request.setAttribute("areaList", areaList);
+        // 検索条件を使ってDiaryLogicで検索
+        DiaryLogic diaryLogic = new DiaryLogic();
+        List<Diary> diaryList = diaryLogic.searchDiaries(user.getId(), name,
+                periodYearStr, periodMonthStr, areaIdStr);
 
-    	    // 検索条件もリクエストにセット（フォームに戻す用）
-    	    request.setAttribute("searchName", name);
-    	    request.setAttribute("searchPeriodYear", periodYearStr);
-    	    request.setAttribute("searchPeriodMonth", periodMonthStr);
-    	    request.setAttribute("searchAreaId", areaIdStr);
+        request.setAttribute("diaryList", diaryList);
 
-    	    // 一覧画面へフォワード
-    	    RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/myCheeseList.jsp");
-    	    dispatcher.forward(request, response);
-    	}
+        AreaLogic areaLogic = new AreaLogic();
+        List<Area> areaList = areaLogic.getAllAreas();
+        request.setAttribute("areaList", areaList);
 
+        // 検索条件もリクエストにセット（フォームに戻す用）
+        request.setAttribute("searchName", name);
+        request.setAttribute("searchPeriodYear", periodYearStr);
+        request.setAttribute("searchPeriodMonth", periodMonthStr);
+        request.setAttribute("searchAreaId", areaIdStr);
+
+        // 一覧画面へフォワード
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/myCheeseList.jsp");
+        dispatcher.forward(request, response);
+    }
 
 
 	
@@ -166,7 +182,23 @@ public class MyCheeseServlet extends HttpServlet {
                     int id = Integer.parseInt(idStr);
                     DiaryLogic diaryLogic = new DiaryLogic();
                     Diary diary = diaryLogic.getDiaryById(id);
-                    request.setAttribute("diary", diary);
+
+                 // ここでエリア名を取得してリクエスト属性にセット
+                 AreaLogic areaLogic = new AreaLogic();
+                 List<Area> areaList = areaLogic.getAllAreas();
+
+                 String areaName = "不明";
+                 if (diary.getArea_id() != null) {
+                     for (Area area : areaList) {
+                         if (area.getId() == diary.getArea_id()) {
+                             areaName = area.getArea_name();
+                             break;
+                         }
+                     }
+                 }
+
+                 request.setAttribute("diary", diary);
+                 request.setAttribute("areaName", areaName);
                     request.getRequestDispatcher("/WEB-INF/jsp/user/myCheeseDetail.jsp").forward(request, response);
                     return;
                 } catch (NumberFormatException e) {

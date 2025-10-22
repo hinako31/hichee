@@ -1,5 +1,6 @@
 package servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -228,8 +229,21 @@ public class NewCheeseServlet extends HttpServlet {
             diary.setFile_name(file_Name);
             if (!file_Name.matches("(?i).*\\.(jpg|jpeg|png|gif)$")) {
                 error.append("画像ファイルは jpg, jpeg, png, gif のみ対応しています。<br>");
-            }
-            // 画像保存処理は別途対応
+            } else {
+                // ファイル保存処理
+                String uploadPath = getServletContext().getRealPath("/upload");
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdir();
+                }
+                try {
+                    imgPart.write(uploadPath + File.separator + file_Name);
+                    // サーバー上のパスをDiaryにセット（例: upload/filename.jpg）
+                    diary.setFile_path("upload/" + file_Name);
+                } catch (IOException e) {
+                    error.append("画像の保存に失敗しました。<br>");
+                    e.printStackTrace();
+                }
         }
 
      // エラーがある場合
@@ -269,6 +283,7 @@ public class NewCheeseServlet extends HttpServlet {
         request.setAttribute("memorialMonthDisplay", memorialMonthDisplay);     
         request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response); 
         // 確認画面へフォワード
+	}
 	}
 	}
 	//postの外側

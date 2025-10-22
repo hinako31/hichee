@@ -25,7 +25,7 @@
 
 </p>
 
-		<form action="NewCheese" method="post">
+		<form action="NewCheese" method="post" enctype="multipart/form-data">
     <button type="submit" name="step" value="作成" class="confirm_btn">作成</button>
     <button type="submit" name="step" value="戻る" class="back_btn">戻る</button>
 

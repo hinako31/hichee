@@ -43,7 +43,7 @@
 
         <p><strong>記念年：</strong> <%= diary.getPeriod_year() != null ? diary.getPeriod_year() : "不明" %></p>
         <p><strong>記念月：</strong> <%= diary.getPeriod_month() != null ? diary.getPeriod_month() : "不明" %></p>
-        <p><strong>場所：</strong> <%= diary.getArea_name() != null ? diary.getArea_name() : "不明" %></p>
+        <p><strong>場所：</strong> <%= request.getAttribute("areaName") != null ? request.getAttribute("areaName") : "不明" %></p>
         <p><strong>Diary：</strong><br><%= diary.getReview() %></p>
 
         <!-- ボタンでPOSTに送る -->
