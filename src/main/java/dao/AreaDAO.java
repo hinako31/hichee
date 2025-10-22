@@ -34,6 +34,10 @@ public class AreaDAO {
 
                 areaList.add(area);
             }
+            System.out.println("DBから取得したエリア数: " + areaList.size());
+        } catch (SQLException e) {
+            System.err.println("DBからのエリア取得に失敗: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return areaList;

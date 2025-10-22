@@ -50,7 +50,8 @@ public class NewCheeseServlet extends HttpServlet {
 		         System.out.println("area.id = " + area.getId() + ", name = " + area.getArea_name());
 		     }
 
-	       
+		     System.out.println("newCheese.jsp にフォワードします。areaList サイズ：" + areaList.size());
+
 	        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp");
 	        dispatcher.forward(request, response);
 	    } catch (Exception e) {
