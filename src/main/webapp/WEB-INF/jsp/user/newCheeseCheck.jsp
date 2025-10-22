@@ -21,7 +21,7 @@
           記念月：${fn:escapeXml(sessionScope.diary.period_month)}<br>
           場所：${fn:escapeXml(areaName)}<br>
           レビュー：<br>${fn:escapeXml(sessionScope.diary.review)}<br>
-          添付ファイル：${fn:escapeXml(sessionScope.diary['file_name'])}<br>
+          添付ファイル: ${sessionScope.diary['file_name'] == null ? "null" : sessionScope.diary['file_name']}<br>
 
 </p>
 

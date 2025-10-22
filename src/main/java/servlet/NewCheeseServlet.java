@@ -110,7 +110,9 @@ public class NewCheeseServlet extends HttpServlet {
 
 		 
 //NewCheese新規登録→確認ボタンを押した時
+		    if ("確認".equals(step)) {
 		// 入力値取得
+		    
         String name = request.getParameter("name");
         String memorialYearStr = request.getParameter("memorial_year");
         String memorialMonthStr = request.getParameter("memorial_month");
@@ -224,9 +226,12 @@ public class NewCheeseServlet extends HttpServlet {
                 }
             }
         }
+        System.out.println("file_name: " + diary.getFile_name());
+
         request.setAttribute("areaName", areaName != null ? areaName : "不明");      
         request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response); 
         // 確認画面へフォワード
+	}
 	}
 	//postの外側
     // imgPartからファイル名を取り出す

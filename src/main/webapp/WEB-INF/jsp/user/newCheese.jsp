@@ -79,7 +79,7 @@
     <img id="preview" src="<c:out value='${sessionScope.diary.file_name != null ? "upload/" + sessionScope.diary.file_name : "images/no_image.png"}'/>" alt=""><br>
     <input type="file" name="file_name" id="image"><br>
 
-    <input type="submit" value="確認">
+    <input type="submit" name ="step" value="確認">
 	
 	</form>
 		<button type="button" onclick="history.back()" class="nav_btn">
