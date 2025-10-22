@@ -99,8 +99,9 @@ public class NewCheeseServlet extends HttpServlet {
 
 		        if (success) {
 		            session.removeAttribute("diary");
-		            request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseResult.jsp").forward(request, response);
-		        } else {
+		            response.sendRedirect("NewCheeseResult");  // 完了画面を表示するサーブレットかJSPのURLへリダイレクト
+		            return;
+		        }else {
 		            // 登録失敗時の処理
 		            request.setAttribute("errorMessage", "登録に失敗しました。再度お試しください。");
 		            request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response);

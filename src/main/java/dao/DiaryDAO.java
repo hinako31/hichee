@@ -89,7 +89,17 @@ public class DiaryDAO {
 	        } else {
 	            ps.setNull(3, java.sql.Types.INTEGER);
 	        }
+	        if (diary.getArea_id() != null) {
+	            ps.setInt(5, diary.getArea_id());
+	        } else {
+	            ps.setNull(5, java.sql.Types.INTEGER);
+	        }
 
+	        if (diary.getFile_path() != null) {
+	            ps.setString(7, diary.getFile_path());
+	        } else {
+	            ps.setNull(7, java.sql.Types.VARCHAR);
+	        }
 	        ps.setInt(4, diary.getUserid());
 	        ps.setInt(5, diary.getArea_id());
 	        ps.setString(6, diary.getFile_name());
