@@ -39,7 +39,7 @@
         <c:forEach var="year" begin="2015" end="2027">
             <c:if test="${year <= currentYear}">
                 <option value="${year}" 
-                    <c:if test="${sessionScope.diary.memorial_year == year}">selected</c:if>>${year}</option>
+                    <c:if test="${sessionScope.diary.period_year == year}">selected</c:if>>${year}</option>
             </c:if>
         </c:forEach>
     </select><br>
@@ -49,11 +49,11 @@
         <option value="">分からない</option>
         <c:forEach var="month" begin="1" end="12">
             <c:set var="monthStr" value="${month < 10 ? '0' + month : month}" />
-            <c:if test="${sessionScope.diary.memorial_year lt currentYear || 
-                         (sessionScope.diary.memorial_year == currentYear && month <= currentMonth) || 
-                         sessionScope.diary.memorial_year == null}">
+            <c:if test="${sessionScope.diary.period_year lt currentYear || 
+                         (sessionScope.diary.period_year == currentYear && month <= currentMonth) || 
+                         sessionScope.diary.period_year == null}">
                 <option value="${monthStr}" 
-                    <c:if test="${sessionScope.diary.memorial_month == monthStr}">selected</c:if>>${month}</option>
+                    <c:if test="${sessionScope.diary.period_month == monthStr}">selected</c:if>>${month}</option>
             </c:if>
         </c:forEach>
     </select><br>
@@ -76,7 +76,15 @@
     <textarea name="review" rows="5" cols="33" maxlength="1000">${fn:escapeXml(sessionScope.diary.review)}</textarea><br>
 
     <label for="file_name">画像：</label>
-    <img id="preview" src="<c:out value='${sessionScope.diary.file_name != null ? "upload/" + sessionScope.diary.file_name : "images/no_image.png"}'/>" alt=""><br>
+    <c:choose>
+  <c:when test="${not empty sessionScope.diary.file_name}">
+    <img id="preview" src="upload/${fn:escapeXml(sessionScope.diary.file_name)}" alt=""><br>
+  </c:when>
+  <c:otherwise>
+    <img id="preview" src="images/no_image.png" alt=""><br>
+  </c:otherwise>
+</c:choose>
+
     <input type="file" name="file_name" id="image"><br>
 
     <input type="submit" name ="step" value="確認">
