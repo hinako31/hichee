@@ -68,7 +68,7 @@ public class NewCheeseServlet extends HttpServlet {
 
 		 if (user == null) {
 		     // ログインしていない、またはセッション切れの場合の処理
-		     response.sendRedirect("login.jsp");  // ログインページなどに戻す
+		     response.sendRedirect("/WEB-INF/jsp/user/login.jsp");  // ログインページなどに戻す
 		     return;
 		 }
 		 HttpSession session = request.getSession();
@@ -82,7 +82,7 @@ public class NewCheeseServlet extends HttpServlet {
 		        List<Area> areaList = areaLogic.getAllAreas();
 		        request.setAttribute("areaList", areaList);
 		        
-		        request.getRequestDispatcher("/WEB-INF/jsp/user//newCheese.jsp").forward(request, response);
+		        request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp").forward(request, response);
 		        return;
 		    }
 		    if ("登録".equals(step)) {
@@ -103,7 +103,7 @@ public class NewCheeseServlet extends HttpServlet {
 		        } else {
 		            // 登録失敗時の処理
 		            request.setAttribute("errorMessage", "登録に失敗しました。再度お試しください。");
-		            request.getRequestDispatcher("/newCheeseCheck.jsp").forward(request, response);
+		            request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response);
 		        }
 		        return;
 		    }
@@ -208,9 +208,21 @@ public class NewCheeseServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp").forward(request, response);
             return;
         }
-
-        // エラーなし → 入力値をセッションに保存して確認画面へリダイレクト
+        // エラーなし → 入力値をセッションに保存して確認画面へ
         session.setAttribute("diary", diary); // セッションに保存
+     // areaId が null じゃないときだけ名前取得
+        String areaName = null;
+        if (areaId != null) {
+            AreaLogic areaLogic = new AreaLogic();
+            List<Area> areaList = areaLogic.getAllAreas();  // DBから再取得
+            for (Area area : areaList) {
+                if (area.getId() == areaId) {
+                    areaName = area.getArea_name();
+                    break;
+                }
+            }
+        }
+        request.setAttribute("areaName", areaName != null ? areaName : "不明");      
         request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response); 
         // 確認画面へフォワード
 	}
