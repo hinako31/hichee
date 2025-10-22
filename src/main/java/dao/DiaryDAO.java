@@ -18,9 +18,9 @@ public class DiaryDAO {
         try(Connection conn = DBManager.getConnection()) {
             String sql = "SELECT id, name, period_year, period_month, user_id, area_id, file_name, file_path, review, created_at, updated_at FROM diaries WHERE user_id = ? ORDER BY created_at DESC";
             PreparedStatement pStmt = conn.prepareStatement(sql);
+            ResultSet rs = pStmt.executeQuery();
             pStmt.setInt(1, user_id);
-                ResultSet rs = pStmt.executeQuery();
-
+             
                 while (rs.next()) {
                     Diary diary = new Diary();
                     diary.setId(rs.getInt("id"));
