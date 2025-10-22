@@ -34,7 +34,7 @@ public class LoginLogic {
         return user;
     }
 
-    public List<Diary> getDiaryList(int userId) {
+    public List<Diary> getDiaryList(int userId) throws SQLException {
         DiaryDAO dao = new DiaryDAO();
         return dao.findByUserId(userId);
     }
