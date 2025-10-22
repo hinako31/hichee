@@ -116,7 +116,7 @@ public class NewCheeseServlet extends HttpServlet {
         String memorialMonthStr = request.getParameter("memorial_month");
         String areaIdStr = request.getParameter("area_id");
         String review = request.getParameter("review");
-        Part imgPart = request.getPart("img_name");
+        Part imgPart = request.getPart("file_name");
 
         StringBuilder error = new StringBuilder();
 
@@ -186,9 +186,11 @@ public class NewCheeseServlet extends HttpServlet {
         }
 
         // 画像チェック
-        String fileName = getFileName(imgPart);
-        if (fileName != null && !fileName.isEmpty()) {
-            if (!fileName.matches("(?i).*\\.(jpg|jpeg|png|gif)$")) {
+        String file_Name = getFile_name(imgPart);
+        if (file_Name != null && !file_Name.isEmpty()) {
+        	 // ファイル名をDiaryにセット
+            diary.setFile_name(file_Name);
+            if (!file_Name.matches("(?i).*\\.(jpg|jpeg|png|gif)$")) {
                 error.append("画像ファイルは jpg, jpeg, png, gif のみ対応しています。<br>");
             }
             // 画像保存処理は別途対応
@@ -228,19 +230,19 @@ public class NewCheeseServlet extends HttpServlet {
 	}
 	//postの外側
     // imgPartからファイル名を取り出す
-     private String getFileName(Part part) {
-     if (part == null) return null;
-     String contentDisp = part.getHeader("content-disposition");
-     if (contentDisp == null) return null;
+	private String getFile_name(Part part) {
+	    if (part == null) return null;
+	    String contentDisp = part.getHeader("content-disposition");
+	    if (contentDisp == null) return null;
 
-     for (String cd : contentDisp.split(";")) {
-         if (cd.trim().startsWith("filename")) {
-            String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-            return fileName.substring(fileName.lastIndexOf("\\") + 1);
-          }
-        }
-      return null;
-     
-     }    
+	    for (String cd : contentDisp.split(";")) {
+	        if (cd.trim().startsWith("filename")) {  // ここをfile_name→filenameに変更
+	            String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+	            return fileName.substring(fileName.lastIndexOf("\\") + 1);
+	        }
+	    }
+	    return null;
+	}
+
 
 }

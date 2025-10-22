@@ -75,9 +75,9 @@
     <label for="review">Diary：</label><br>
     <textarea name="review" rows="5" cols="33" maxlength="1000">${fn:escapeXml(sessionScope.diary.review)}</textarea><br>
 
-    <label for="img_name">画像：</label>
-    <img id="preview" src="<c:out value='${sessionScope.diary.img_name != null ? "upload/" + sessionScope.diary.img_name : "images/no_image.png"}'/>" alt=""><br>
-    <input type="file" name="img_name" id="image"><br>
+    <label for="file_name">画像：</label>
+    <img id="preview" src="<c:out value='${sessionScope.diary.file_name != null ? "upload/" + sessionScope.diary.file_name : "images/no_image.png"}'/>" alt=""><br>
+    <input type="file" name="file_name" id="image"><br>
 
     <input type="submit" value="確認">
 	

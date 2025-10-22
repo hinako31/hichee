@@ -20,8 +20,8 @@
           記念年：${fn:escapeXml(sessionScope.diary.period_year)}<br>
           記念月：${fn:escapeXml(sessionScope.diary.period_month)}<br>
           場所：${fn:escapeXml(areaName)}<br>
-          レビュー：${fn:escapeXml(sessionScope.diary.review)}<br>
-          添付ファイル：${fn:escapeXml(sessionScope.diary.img_name)}<br>
+          レビュー：<br>${fn:escapeXml(sessionScope.diary.review)}<br>
+          添付ファイル：${fn:escapeXml(sessionScope.diary.file_name)}<br>
 </p>
 
 		<form action="NewCheese" method="post">
