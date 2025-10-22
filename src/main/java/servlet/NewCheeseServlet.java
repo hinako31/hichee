@@ -85,7 +85,7 @@ public class NewCheeseServlet extends HttpServlet {
 		        request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp").forward(request, response);
 		        return;
 		    }
-		    if ("登録".equals(step)) {
+		    if ("作成".equals(step)) {
 		        Diary diary = (Diary) session.getAttribute("diary");
 		        if (diary == null) {
 		            // セッション切れなどの処理
@@ -99,7 +99,7 @@ public class NewCheeseServlet extends HttpServlet {
 
 		        if (success) {
 		            session.removeAttribute("diary");
-		            response.sendRedirect("/WEB-INF/jsp/user/newCheeseResult.jsp");
+		            request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseResult.jsp").forward(request, response);
 		        } else {
 		            // 登録失敗時の処理
 		            request.setAttribute("errorMessage", "登録に失敗しました。再度お試しください。");
@@ -228,8 +228,12 @@ public class NewCheeseServlet extends HttpServlet {
             }
         }
         System.out.println("file_name: " + diary.getFile_name());
+        String memorialYearDisplay = (memorialYear != null) ? memorialYear.toString() : "不明";
+        String memorialMonthDisplay = (memorialMonth != null) ? String.valueOf(memorialMonth) : "不明";
 
         request.setAttribute("areaName", areaName != null ? areaName : "不明");      
+        request.setAttribute("memorialYearDisplay", memorialYearDisplay);
+        request.setAttribute("memorialMonthDisplay", memorialMonthDisplay);     
         request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response); 
         // 確認画面へフォワード
 	}

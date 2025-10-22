@@ -62,7 +62,7 @@
 <select name="area_id">
   <option value="">選択しない</option>
   <c:forEach var="area" items="${areaList}">
-    <option value="${area.id}" <c:if test="${param.area_id == area.id}">selected</c:if>>
+    <option value="${area.id}" <c:if test="${sessionScope.darea_id == area.id}">selected</c:if>>
         ${area.area_name}
     </option>
   </c:forEach>
@@ -90,8 +90,9 @@
     <input type="submit" name ="step" value="確認">
 	
 	</form>
-		<button type="button" onclick="history.back()" class="nav_btn">
-		<i class="fa-solid fa-arrow-rotate-left"></i>My Pageへ</button>
+		<form action="Login" method="post">
+	<input type="submit" name="mypage" value="My Pageへ" class="nav_btn">
+	</form>
 </main>	
 </body>
 </html>

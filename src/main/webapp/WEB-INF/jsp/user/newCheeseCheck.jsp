@@ -17,8 +17,8 @@
 		<p class="msg_info">このCheese Diaryを作成しますか？🐭</p>
 		<p>
           店名：${fn:escapeXml(sessionScope.diary.name)}<br>
-          記念年：${fn:escapeXml(sessionScope.diary.period_year)}<br>
-          記念月：${fn:escapeXml(sessionScope.diary.period_month)}<br>
+          記念年：${fn:escapeXml(memorialYearDisplay)}<br>
+          記念月：${fn:escapeXml(memorialMonthDisplay)}<br>
           場所：${fn:escapeXml(areaName)}<br>
           レビュー：<br>${fn:escapeXml(sessionScope.diary.review)}<br>
           添付ファイル: ${sessionScope.diary['file_name'] == null ? "null" : sessionScope.diary['file_name']}<br>
