@@ -12,38 +12,39 @@ import model.Diary;
 public class DiaryDAO {
 
     //ログインしたときのDiary記録取得
-    public List<Diary> findByUserId(int user_id) throws SQLException {
-        List<Diary> diaryList = new ArrayList<>();
+	public List<Diary> findByUserId(int user_id) throws SQLException {
+	    List<Diary> diaryList = new ArrayList<>();
+	    String sql = "SELECT id, name, period_year, period_month, user_id, area_id, file_name, file_path, review, created_at, updated_at FROM diaries WHERE user_id = ? ORDER BY created_at DESC";
+	       
 
-        try(Connection conn = DBManager.getConnection()) {
-            String sql = "SELECT id, name, period_year, period_month, user_id, area_id, file_name, file_path, review, created_at, updated_at FROM diaries WHERE user_id = ? ORDER BY created_at DESC";
-            PreparedStatement pStmt = conn.prepareStatement(sql);
-            ResultSet rs = pStmt.executeQuery();
-            pStmt.setInt(1, user_id);
-             
-                while (rs.next()) {
-                    Diary diary = new Diary();
-                    diary.setId(rs.getInt("id"));
-                    diary.setUserid(rs.getInt("user_id"));
-                    diary.setName(rs.getString("name"));
-                    diary.setReview(rs.getString("review"));
-                    diary.setPeriod_year(rs.getInt("period_year"));
-                    diary.setPeriod_month(rs.getInt("period_month"));
-                    diary.setArea_id(rs.getInt("area_id"));
-                    diary.setFile_name(rs.getString("file_name"));
-                    diary.setFile_path(rs.getString("file_path"));
-                    diary.setCreated_at(rs.getTimestamp("created_at"));
-                    diary.setUpdated_at(rs.getTimestamp("updated_at"));
+	    try (Connection conn = DBManager.getConnection();
+	         PreparedStatement pStmt = conn.prepareStatement(sql)) {
+	        pStmt.setInt(1, user_id);
+	        ResultSet rs = pStmt.executeQuery();
 
-                    diaryList.add(diary);
-                }
-            }catch (SQLException e) {
-            System.err.println("DBからのエリア取得に失敗: " + e.getMessage());
-            e.printStackTrace();
-            throw e; 
-        }
-        return diaryList;
-    }
+	        while (rs.next()) {
+	            Diary diary = new Diary();
+	            diary.setId(rs.getInt("id"));
+	            diary.setUserid(rs.getInt("user_id"));
+	            diary.setName(rs.getString("name"));
+	            diary.setReview(rs.getString("review"));
+	            diary.setPeriod_year(rs.getInt("period_year"));
+	            diary.setPeriod_month(rs.getInt("period_month"));
+	            diary.setArea_id(rs.getInt("area_id"));
+	            diary.setFile_name(rs.getString("file_name"));
+	            diary.setFile_path(rs.getString("file_path"));
+	            diary.setCreated_at(rs.getTimestamp("created_at"));
+	            diary.setUpdated_at(rs.getTimestamp("updated_at"));
+
+	            diaryList.add(diary);
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("DBからのエリア取得に失敗: " + e.getMessage());
+	        e.printStackTrace();
+	        throw e;
+	    }
+	    return diaryList;
+	}
     //退会時お気に入り削除
 	public boolean deleteDiary(int userId) {
     	String sql = "DELETE FROM diaries WHERE user_id = ?";
