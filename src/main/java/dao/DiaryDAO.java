@@ -12,9 +12,9 @@ import model.Diary;
 
 public class DiaryDAO {
 
-    private final String JDBC_URL = "jdbc:mysql://localhost:3306/sampledb";
+    private final String JDBC_URL = "jdbc:mysql://localhost:3306/hichee?useSSL=false&serverTimezone=UTC";
     private final String DB_USER = "root";
-    private final String DB_PASS = "password";
+    private final String DB_PASS = "root";
 
     //ログインしたときのDiary記録取得
     public List<Diary> findByUserId(int user_id) {

@@ -11,14 +11,14 @@ import java.util.List;
 import model.Area;
 
 public class AreaDAO {
-    private final static String JDBC_URL = "jdbc:mysql://localhost:3306/sampledb";
+    private final static String JDBC_URL = "jdbc:mysql://localhost:3306/hichee?useSSL=false&serverTimezone=UTC";
     private final static String DB_USER = "root";
-    private final static String DB_PASS = "password";
+    private final static String DB_PASS = "root";
 
     // static を外す
     public List<Area> getAllAreas() throws SQLException {
         List<Area> areaList = new ArrayList<>();
-        String sql = "SELECT id, area_name, sort_order FROM hichee.areas ORDER BY sort_order ASC";
+        String sql = "SELECT id, area_name, sort_order FROM areas ORDER BY sort_order ASC";
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
              PreparedStatement stmt = conn.prepareStatement(sql);
