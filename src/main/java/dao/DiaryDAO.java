@@ -40,6 +40,7 @@ public class DiaryDAO {
             }catch (SQLException e) {
             System.err.println("DBからのエリア取得に失敗: " + e.getMessage());
             e.printStackTrace();
+            throw e; 
         }
         return diaryList;
     }
