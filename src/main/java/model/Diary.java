@@ -10,7 +10,7 @@ public class Diary implements Serializable {
     private String review;       // 感想
     private Integer period_year;            // 訪問年
     private Integer period_month;           // 訪問月
-    private int area_id;    // 都道府県ID
+    private Integer area_id;    // 都道府県ID
     private String file_name;    // 画像ファイル名
     private String file_path;    // 画像パス
     private Date created_at;      // 登録日時
@@ -68,11 +68,11 @@ public class Diary implements Serializable {
 	}
 
 
-	public int getArea_id() {
+	public Integer getArea_id() {
 		return area_id;
 	}
 
-	public void setArea_id(int area_id) {
+	public void setArea_id(Integer area_id) {
 		this.area_id = area_id;
 	}
 

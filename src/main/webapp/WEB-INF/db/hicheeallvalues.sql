@@ -6,7 +6,7 @@ USE hichee;
 
 CREATE  TABLE areas(          id INT PRIMARY KEY      ,area_name VARCHAR(100) NOT null     ,sort_order INT );
 
-CREATE TABLE diaries(     id INT AUTO_INCREMENT PRIMARY KEY      ,name VARCHAR(255) NOT null      ,period_year int      ,period_month int     ,user_id int NOT null REFERENCES users(id)     ,area_id int NOT null REFERENCES areas(id)     ,file_name VARCHAR(255) NOT null     ,file_path VARCHAR(512) NOT null     ,review VARCHAR(1000) NOT null     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP    ,updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  );
+CREATE TABLE diaries(     id INT AUTO_INCREMENT PRIMARY KEY      ,name VARCHAR(255) NOT null      ,period_year int      ,period_month int     ,user_id int NOT null REFERENCES users(id)     ,area_id int REFERENCES areas(id)     ,file_name VARCHAR(255) NOT null     ,file_path VARCHAR(512) NOT null     ,review VARCHAR(1000) NOT null     ,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP    ,updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  );
 
 CREATE TABLE users(     id INT AUTO_INCREMENT PRIMARY KEY      ,name VARCHAR(64) NOT null      ,email VARCHAR(255) NOT null unique     ,pass VARCHAR(64) NOT null );
 

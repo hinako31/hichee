@@ -162,10 +162,11 @@ public class NewCheeseServlet extends HttpServlet {
                 diary.setArea_id(areaId);
             } catch (NumberFormatException e) {
                 error.append("場所の指定が不正です。<br>");
+            } 
+        }else {
+                // 「選択しない」の場合はエラーにしない。area_idはnullのままにする
+                diary.setArea_id(null);
             }
-        } else {
-            error.append("場所を選択してください。<br>");
-        }
 
         // バリデーション
 
