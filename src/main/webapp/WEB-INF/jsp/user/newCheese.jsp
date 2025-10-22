@@ -59,14 +59,18 @@
     </select><br>
 
     <label for="area_id">場所：</label>
-    <select name="area_id">
+<select name="area_id">
   <option value="">選択しない</option>
   <c:forEach var="area" items="${areaList}">
-      <option value="${area.id}" <c:if test="${param.area_id == area.id}">selected</c:if>>
-          ${area.area_name}
-      </option>
+    <option value="${area.id}" <c:if test="${param.area_id == area.id}">selected</c:if>>
+        ${area.area_name}
+    </option>
   </c:forEach>
 </select><br>
+
+<c:if test="${empty areaList}">
+  <p>エリアリストが空、または null です</p>
+</c:if>
 
     <label for="review">Diary：</label><br>
     <textarea name="review" rows="5" cols="33" maxlength="1000">${fn:escapeXml(sessionScope.diary.review)}</textarea><br>

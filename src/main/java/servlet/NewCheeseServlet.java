@@ -45,6 +45,11 @@ public class NewCheeseServlet extends HttpServlet {
 //	        if (areaList == null) {
 //	            throw new ServletException("エリアリストの取得に失敗しました（null）");
 //	        }
+		     System.out.println("areaList size: " + areaList.size());
+		     for (Area area : areaList) {
+		         System.out.println("area.id = " + area.getId() + ", name = " + area.getArea_name());
+		     }
+
 	       
 	        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp");
 	        dispatcher.forward(request, response);
