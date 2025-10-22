@@ -18,7 +18,7 @@ public class AreaDAO {
     // static を外す
     public List<Area> getAllAreas() throws SQLException {
         List<Area> areaList = new ArrayList<>();
-        String sql = "SELECT id, area_name, sort_order FROM areas ORDER BY sort_order ASC";
+        String sql = "SELECT ID, AREA_NAME, SORT_ORDER FROM AREAS ORDER BY SORT_ORDER ASC";
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
              PreparedStatement stmt = conn.prepareStatement(sql);
