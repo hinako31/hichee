@@ -104,10 +104,11 @@ public class ChangeCheeseServlet extends HttpServlet {
         	
         	int userId = user.getId();
 
+        	System.out.println("取得したid: " + idStr);
+        	System.out.println("ログイン中のuserId: " + userId);
         	Diary diary = diaryLogic.getDiaryById(id, userId);
-
+        	System.out.println("取得したDiary: " + diary);
             
-            System.out.println("取得したDiary: " + diary); 
             if (diary == null) {
                 System.out.println("Diaryが見つかりませんでした。id=" + id);
                 response.sendRedirect("MyCheese");  // or エラーページに

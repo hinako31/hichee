@@ -47,7 +47,6 @@ public class DiaryLogic {
 	        DiaryDAO dao = new DiaryDAO();
 	        return dao.findById(id, userId);
 	    }
-
 		
 
     

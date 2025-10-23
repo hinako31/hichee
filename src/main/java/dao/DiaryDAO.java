@@ -229,7 +229,7 @@ public class DiaryDAO {
 	            diary.setUserid(rs.getInt("user_id"));
 	            diary.setPeriod_year((Integer) rs.getObject("period_year"));
 	            diary.setPeriod_month((Integer) rs.getObject("period_month"));
-	            diary.setArea_id(rs.getInt("area_id"));
+	            diary.setArea_id((Integer) rs.getObject("area_id"));
 	            diary.setFile_name(rs.getString("file_name"));
 	            diary.setFile_path(rs.getString("file_path"));
 	            diary.setCreated_at(rs.getTimestamp("created_at"));
