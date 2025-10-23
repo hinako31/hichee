@@ -123,6 +123,57 @@ public class DiaryDAO {
 	    return result;
 	}
 	
+	//日記内容の変更を上書き
+		public boolean updateDiary(Diary diary) {
+			 Connection conn = null;
+			    PreparedStatement ps = null;
+
+			    try {
+			        conn = DBManager.getConnection(); 
+		   
+		    		  String sql = "UPDATE diaries SET name = ?, review = ?, period_year = ?, period_month = ?, area_id = ?, file_name = ? WHERE id = ?";
+		    		  ps = conn.prepareStatement(sql);
+
+
+		      
+		        ps.setString(1, diary.getName());
+		        ps.setString(2, diary.getReview());
+		        
+		        if (diary.getPeriod_year() != null) {
+		            ps.setInt(3, diary.getPeriod_year());
+		        } else {
+		            ps.setNull(3, java.sql.Types.INTEGER);
+		        }
+		        
+		        if (diary.getPeriod_month() != null) {
+		            ps.setInt(4, diary.getPeriod_month());
+		        } else {
+		            ps.setNull(4, java.sql.Types.INTEGER);
+		        }
+		        
+		        if (diary.getArea_id() != null) {
+		            ps.setInt(5, diary.getArea_id());
+		        } else {
+		            ps.setNull(5, java.sql.Types.INTEGER);
+		        }
+		        
+		        ps.setString(6, diary.getFile_name());
+		        
+		        ps.setInt(7, diary.getId());  // 更新対象の主キーID
+
+		        int result = ps.executeUpdate();
+		        return result > 0;   // 更新件数が1以上なら成功
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        return false;
+		    } finally {
+		        DBUtil.close(ps);
+		        DBUtil.close(conn);
+		    }
+		}
+
+		
+
 	
 	public List<model.Diary> searchByConditions(int userId, String name, String periodYearStr, String periodMonthStr, String areaIdStr) {
 	    List<model.Diary> diaryList = new ArrayList<>();
@@ -219,9 +270,14 @@ public class DiaryDAO {
 	        ps.setInt(1, id);
 	        ps.setInt(2, userId);
 
+	        System.out.println("findById実行: id=" + id + ", userId=" + userId);
+	        System.out.println("SQL: " + sql);
+	        
 	        ResultSet rs = ps.executeQuery();
 
 	        if (rs.next()) {
+	        	
+	        	 System.out.println("DBからデータ取得成功！");
 	            diary = new Diary();
 	            diary.setId(rs.getInt("id"));
 	            diary.setName(rs.getString("name"));
@@ -236,13 +292,13 @@ public class DiaryDAO {
 	            diary.setUpdated_at(rs.getTimestamp("updated_at"));
 	        }
 	    } catch (SQLException e) {
+	    	System.out.println("DBから該当データなし");
 	        e.printStackTrace();
 	    }
 
 	    return diary;
 	}
-
 	
-
+	
 
 }

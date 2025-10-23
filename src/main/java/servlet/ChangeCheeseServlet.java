@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
@@ -108,15 +109,27 @@ public class ChangeCheeseServlet extends HttpServlet {
         	System.out.println("ログイン中のuserId: " + userId);
         	Diary diary = diaryLogic.getDiaryById(id, userId);
         	System.out.println("取得したDiary: " + diary);
-            
-            if (diary == null) {
-                System.out.println("Diaryが見つかりませんでした。id=" + id);
-                response.sendRedirect("MyCheese");  // or エラーページに
-                return;
-            }
+        	HttpSession session3 = request.getSession();
+        	
+        	if (diary != null) {
+        		  session3.setAttribute("tentative", diary);
+        		    session3.setAttribute("periodYearStr", diary.getPeriod_year() == null ? "" : diary.getPeriod_year().toString());
+        		    session3.setAttribute("periodMonthStr", diary.getPeriod_month() == null ? "" : diary.getPeriod_month().toString());
 
-            HttpSession session3 = request.getSession();
+        		    AreaLogic areaLogic = new AreaLogic();
+        		    List<Area> areaList = areaLogic.getAllAreas();
+        		    session3.setAttribute("areaList", areaList);
+
+        		    request.getRequestDispatcher("/WEB-INF/jsp/user/changeCheese.jsp").forward(request, response);
+        		} else {
+        		    System.out.println("Diaryが見つかりませんでした。id=" + id);
+        		    response.sendRedirect("MyCheese");
+        		    return;
+        		}
+        	
+            
             session3.setAttribute("tentative", diary);  // ✅ 必須
+          
 
             // 必要ならエリアリストもセット
             AreaLogic areaLogic = new AreaLogic();
@@ -133,6 +146,90 @@ public class ChangeCheeseServlet extends HttpServlet {
                 return;
             }
         } 
+		    
+
+		 // 確認画面からの分岐
+		    String steps = request.getParameter("steps");
+		    if ("戻る".equals(steps)) {
+		        Diary diary = (Diary) session.getAttribute("tentative");
+		        request.setAttribute("tentative", diary);
+		       
+
+		        // エリアリストも必要ならセットする
+		        AreaLogic areaLogic = new AreaLogic();
+		        List<Area> areaList = areaLogic.getAllAreas();
+		        request.setAttribute("areaList", areaList);
+
+		        // 新規登録用のJSPではなく変更入力画面のJSPに合わせる
+		        request.getRequestDispatcher("/WEB-INF/jsp/user/changeCheese.jsp").forward(request, response);
+		        return;
+		    }
+
+		    if ("変更登録".equals(steps)) {  // 「作成」→「変更登録」などに名前変更推奨
+		        System.out.println("doPostが呼ばれました。step=" + steps);
+		        Diary diary = (Diary) session.getAttribute("tentative");
+		        System.out.println("diary ID: " + diary.getId());  // ここがnullや0でないか
+		        System.out.println("diary from session: " + diary);
+		       
+		        // まずはファイルアップロード処理（例）
+		        Part filePart = request.getPart("img_name");
+		        String uploadedFileName = null;
+		        if (filePart != null && filePart.getSize() > 0) {
+		            uploadedFileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+		            // ファイル保存処理（必要に応じて）
+		            // 例: saveFile(filePart, uploadedFileName);
+		        }
+
+		        if (uploadedFileName == null || uploadedFileName.isEmpty()) {
+		            diary.setFile_name(null); // アップロードなければnullクリア
+		        } else {
+		            diary.setFile_name(uploadedFileName); // アップロードあればセット
+		        }
+
+		        if (diary == null) {
+		            System.out.println("diaryがnullです。");
+		            response.sendRedirect("ChangeCheese"); 
+		            return;
+		        }
+
+		        // DiaryLogicに更新処理依頼（updateDiaryメソッドを用意）
+		        DiaryLogic diaryLogic = new DiaryLogic();
+
+		        boolean success = diaryLogic.updateDiary(diary);  // ここをregisterDiaryからupdateDiaryに変更
+
+		        System.out.println("更新結果 success = " + success);
+
+		        if (success) {
+		            session.removeAttribute("tentative");
+		            response.sendRedirect("ChangeCheeseResult");  // 完了画面（変更完了画面）にリダイレクト
+		            return;
+		        } else {
+		            // 更新失敗時の処理
+		            request.setAttribute("errorMessage", "更新に失敗しました。再度お試しください。");
+
+		            Integer memorialYear = diary.getPeriod_year();
+		            Integer memorialMonth = diary.getPeriod_month();
+		            Integer areaId = diary.getArea_id();
+
+		            String memorialYearDisplay = (memorialYear != null) ? memorialYear.toString() : "不明";
+		            String memorialMonthDisplay = (memorialMonth != null) ? memorialMonth.toString() : "不明";
+
+		            AreaLogic areaLogic = new AreaLogic();
+		            List<Area> areaList = areaLogic.getAllAreas();
+		            String areaName = "不明";
+		            if (areaId != null) {
+		                for (Area area : areaList) {
+		                    if (area.getId() == areaId) {
+		                        areaName = area.getArea_name();
+		                        break;
+		                    }
+		                }
+		            }
+		            request.setAttribute("memorialYearDisplay", memorialYearDisplay);
+
+			        }
+			      
+			    }
         
         //入力後確認画面へ遷移する際のチェック
         if("確認".equals(action)) {
@@ -143,7 +240,9 @@ public class ChangeCheeseServlet extends HttpServlet {
             String areaIdStr = request.getParameter("area_id");
             String review = request.getParameter("review");
             Part imgPart = request.getPart("img_name");
-
+            String idStr = request.getParameter("id");
+            
+            
             StringBuilder error = new StringBuilder();
 
             // 入力値をJavaBeanに格納（Storeクラスは要用意）
@@ -152,6 +251,13 @@ public class ChangeCheeseServlet extends HttpServlet {
             diary.setName(name);
             diary.setReview(review);
 
+            if (idStr != null && !idStr.isEmpty()) {
+                try {
+                    diary.setId(Integer.parseInt(idStr));
+                } catch (NumberFormatException e) {
+                    // 必要ならエラーハンドリング
+                }
+            }
             //エラーの☑
             // memorialYear
             Integer memorialYear = null;
@@ -216,9 +322,17 @@ public class ChangeCheeseServlet extends HttpServlet {
             if (fileName != null && !fileName.isEmpty()) {
                 if (!fileName.matches("(?i).*\\.(jpg|jpeg|png|gif)$")) {
                     error.append("画像ファイルは jpg, jpeg, png, gif のみ対応しています。<br>");
+                } else {
+                    diary.setFile_name(fileName);
                 }
-                // 画像保存処理は別途対応
+            } else {
+                // ファイル選択がない場合は既存のファイル名を保持（セッションやDBから取得）
+                Diary oldDiary = (Diary) session.getAttribute("tentative"); // 仮にセッションにあるなら
+                if (oldDiary != null) {
+                    diary.setFile_name(oldDiary.getFile_name());
+                }
             }
+
 
          // エラーがある場合
             if (error.length() > 0) {
@@ -231,13 +345,32 @@ public class ChangeCheeseServlet extends HttpServlet {
                 // セッションに入力値を保存（エラー時）
                 session.setAttribute("tentative", diary);
 
-                request.getRequestDispatcher("/changeCheese.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/jsp/user/changeCheese.jsp").forward(request, response);
                 return;
             }
 
             // エラーなし → 入力値をセッションに保存して確認画面へリダイレクト
-            session.setAttribute("diary", diary); // セッションに保存
-            request.getRequestDispatcher("/changeCheeseCheck.jsp").forward(request, response); 
+            session.setAttribute("tentative", diary); // セッションに保存
+            // areaId が null じゃないときだけ名前取得
+            String areaName = null;
+            if (areaId != null) {
+                AreaLogic areaLogic = new AreaLogic();
+                List<Area> areaList = areaLogic.getAllAreas();  // DBから再取得
+                for (Area area : areaList) {
+                    if (area.getId() == areaId) {
+                        areaName = area.getArea_name();
+                        break;
+                    }
+                }
+            }
+            System.out.println("file_name: " + diary.getFile_name());
+            String memorialYearDisplay = (memorialYear != null) ? memorialYear.toString() : "不明";
+            String memorialMonthDisplay = (memorialMonth != null) ? String.valueOf(memorialMonth) : "不明";
+
+            request.setAttribute("areaName", areaName != null ? areaName : "不明");      
+            request.setAttribute("memorialYearDisplay", memorialYearDisplay);
+            request.setAttribute("memorialMonthDisplay", memorialMonthDisplay);     
+            request.getRequestDispatcher("/WEB-INF/jsp/user/changeCheeseCheck.jsp").forward(request, response); 
             // 確認画面へフォワード
         }
         

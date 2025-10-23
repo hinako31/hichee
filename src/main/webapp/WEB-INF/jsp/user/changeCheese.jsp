@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
-    Diary diary = (Diary) request.getAttribute("tentative");
+     Diary diary = (Diary) session.getAttribute("tentative");
     if (diary == null) {
 %>
     <p>データが見つかりません。</p>
@@ -13,6 +13,16 @@
         return;
     }
 %>
+<%
+    String fileNameFromServer = "";
+    if (session.getAttribute("tentative") != null) {
+        model.Diary tempDiary = (model.Diary) session.getAttribute("tentative");
+        if (tempDiary.getFile_name() != null) {
+            fileNameFromServer = tempDiary.getFile_name();
+        }
+    }
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,62 +40,126 @@
 </c:if>
 
 <form action="ChangeCheese" method="post" enctype="multipart/form-data">	
+<input type="hidden" name="id" value="${tentative.id}">
 	  <p class="msg_info">Cheese Diaryを変更チュウ🐭</p>
 		 <label for="name">店名：</label>
     <input type="text" name="name" value="${fn:escapeXml(sessionScope.tentative.name)}"><br>
 
-    <label for="memorial_year">記念年：</label>
-    <select name="memorial_year" id="memorial_year">
-        <option value="">分からない</option>
-        <c:forEach var="year" begin="2015" end="2027">
-            <c:if test="${year <= currentYear}">
-                <option value="${year}" 
-                    <c:if test="${sessionScope.tentative.period_year == year}">selected</c:if>>${year}</option>
-            </c:if>
-        </c:forEach>
-    </select><br>
 
-    <label for="memorial_month">記念月：</label>
-    <select name="memorial_month" id="memorial_month">
-        <option value="">分からない</option>
-        <c:forEach var="month" begin="1" end="12">
-            <c:set var="monthStr" value="${month < 10 ? '0' + month : month}" />
-            <c:if test="${sessionScope.tentative.period_year lt currentYear || 
-                         (sessionScope.tentative.period_year == currentYear && month <= currentMonth) || 
-                         sessionScope.tentative.period_year == null}">
-                <option value="${monthStr}" 
-                    <c:if test="${sessionScope.tentative.period_month == monthStr}">selected</c:if>>${month}</option>
-            </c:if>
-        </c:forEach>
-    </select><br>
+  <label for="memorial_year">記念年：</label>
+<select name="memorial_year" id="memorial_year">
+    <option value="">分からない</option>
+    <c:forEach var="year" begin="2015" end="2027">
+        <option value="${year}" 
+            <c:if test="${periodYearStr eq year}">selected</c:if>>
+            ${year}
+        </option>
+    </c:forEach>
+</select><br>
 
-    <label for="area_id">場所：</label>
-    <select name="area_id" id="area_id">
-        <c:forEach var="area" items="${areaList}">
-            <option value="${area.area_id}" 
-                <c:if test="${sessionScope.tentative.area_id == area.area_id}">selected</c:if>>
-                <c:out value="${area.area_name}" />
-            </option>
+<label for="memorial_month">記念月：</label>
+<select name="memorial_month" id="memorial_month">
+    <option value="">分からない</option>
+    <c:forEach var="month" begin="1" end="12">
+        <option value="${month}" 
+            <c:if test="${periodMonthStr eq month}">selected</c:if>>
+            ${month}
+        </option>
+    </c:forEach>
+</select><br>
+
+
+ <label for="area_id">場所：</label>
+<select name="area_id" id="area_id">
+    <option value="">選択しない</option>
+    <c:if test="${not empty sessionScope.areaList}">
+        <c:forEach var="area" items="${sessionScope.areaList}">
+            <option value="${area.id}"
+        <c:if test="${sessionScope.tentative.area_id == area.id}">selected</c:if>>
+    <c:out value="${area.area_name}" />
+</option>
+
         </c:forEach>
-    </select><br>
+    </c:if>
+</select>
+<br>
 
     <label for="review">Diary：</label>
     <textarea name="review" rows="5" cols="33" maxlength="1000">${fn:escapeXml(sessionScope.tentative.review)}</textarea><br>
 
-    <label for="img_name">画像：</label>
-   <c:choose>
-    <c:when test="${not empty sessionScope.tentative.file_name}">
-        <img id="preview" src="upload/${sessionScope.tentative.file_name}" alt="画像">
+<style>
+  #fileNameDisplay {
+    font-size: 0.9em;
+    margin-left: -90px;
+    vertical-align: middle;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  #img_name {
+    vertical-align: middle;
+  }
+  input[type="file"] {
+    color: transparent;
+    width: 200px; /* 必要に応じて調整してください */
+    cursor: pointer;
+  }
+
+  input[type="file"]::-webkit-file-upload-button {
+    cursor: pointer;
+  }
+</style>
+
+<label for="img_name">画像：</label>
+<c:choose>
+    <c:when test="${not empty sessionScope.tentative.file_name and sessionScope.tentative.file_name ne ''}">
+
+        <img id="preview" src="upload/${sessionScope.tentative.file_name}" alt="画像" style="max-width:200px;">
     </c:when>
     <c:otherwise>
-        <img id="preview" src="images/no_image.png" alt="No Image">
+        <img id="preview" src="images/no_image.png" alt="No Image" style="max-width:200px;">
     </c:otherwise>
-</c:choose><br>
+</c:choose>
+<br>
+<input type="file" name="img_name" id="img_name" accept="image/*">
+<span id="fileNameDisplay">ファイルが選択されていません</span>
+
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const fileNameFromServer = "<%= fileNameFromServer %>";
+
+    if (fileNameFromServer) {
+      fileNameDisplay.textContent = fileNameFromServer;
+    } else {
+      fileNameDisplay.textContent = 'ファイルが選択されていません';
+    }
+  });
+
+  const fileInput = document.getElementById('img_name');
+  const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      fileNameDisplay.textContent = fileInput.files[0].name;
+    } else {
+      fileNameDisplay.textContent = 'ファイルが選択されていません';
+    }
+  });
+</script>
+
+<br>
 
     <input type="submit" name="action" value="確認">
 	
 	</form>
-		<button type="button" onclick="history.back()" class="nav_btn">
-		<i class="fa-solid fa-arrow-rotate-left"></i>戻る</button>
+	  <form action="MyCheese" method="post">
+                    <input type="hidden" name="action" value="detail">
+                    <input type="hidden" name="id" value="<%= diary.getId() %>">
+                    <button class="btn-view" type="submit">戻る</button>
+                </form>
 </body>
 </html>

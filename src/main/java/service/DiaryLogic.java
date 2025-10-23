@@ -25,7 +25,12 @@ public class DiaryLogic {
 	        return dao.insertDiary(diary);
 	    
 	}
-
+	
+	//ChangeCheese上書き
+	public boolean updateDiary(Diary diary) {
+	    DiaryDAO dao = new DiaryDAO();
+	    return dao.updateDiary(diary);
+	}
 	//MyCheese検索
         /**
 	     * 複数条件での検索

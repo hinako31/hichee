@@ -38,7 +38,7 @@
     <select name="area_id">
         <option value="">選択しない</option>
         <c:forEach var="area" items="${areaList}">
-            <option value="${area.id}" <c:if test="${param.area_id == area.id.toString()}">selected</c:if>>${area.name}</option>
+            <option value="${area.id}" <c:if test="${param.area_id == area.id.toString()}">selected</c:if>>${area.area_name}</option>
         </c:forEach>
         <option value="unknown" <c:if test="${param.area_id == 'unknown'}">selected</c:if>>分からない</option>
     </select><br><br>
