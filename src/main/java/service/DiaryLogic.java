@@ -9,11 +9,7 @@ import model.Diary;
 public class DiaryLogic {
 
 	
-	 //退会したときのDiary削除
-    public boolean deleteDiary(int userId) {
-    	DiaryDAO dao = new DiaryDAO();
-    	return dao.deleteDiary(userId);
-    }
+	
 
     //new Cheese作成時の登録指示
 	public boolean registerDiary(Diary diary, int userId) {
@@ -52,7 +48,13 @@ public class DiaryLogic {
 	        DiaryDAO dao = new DiaryDAO();
 	        return dao.findById(id, userId);
 	    }
-		
+	    
+	    
 
-    
+	  
+	    //退会したときのDiary削除
+	    public boolean deleteDiary(int userId) {
+	    	DiaryDAO dao = new DiaryDAO();
+	    	return dao.deleteDiary(userId);
+	    }
 }

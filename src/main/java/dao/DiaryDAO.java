@@ -45,23 +45,7 @@ public class DiaryDAO {
 	    }
 	    return diaryList;
 	}
-    //退会時お気に入り削除
-	public boolean deleteDiary(int userId) {
-    	String sql = "DELETE FROM diaries WHERE user_id = ?";
-    	try (Connection conn = DBManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-    		){
-    		 ps.setInt(1, userId);
-             ps.executeUpdate();
-             return true; // 件数は気にしない（0でもOK）
-    	
-    	}catch (SQLException e) {
-            System.out.println("SQLエラー: " + e.getMessage());
-    		e.printStackTrace();
-    		return false;
-    	}
-    }
-	
+   
 	
 	//new Cheese作成時の登録指示
 	public boolean insertDiary(Diary diary) {
@@ -299,6 +283,23 @@ public class DiaryDAO {
 	    return diary;
 	}
 	
-	
+
+	 //退会時削除
+		public boolean deleteDiary(int userId) {
+	    	String sql = "DELETE FROM diaries WHERE user_id = ?";
+	    	try (Connection conn = DBManager.getConnection();
+	             PreparedStatement ps = conn.prepareStatement(sql);
+	    		){
+	    		 ps.setInt(1, userId);
+	             ps.executeUpdate();
+	             return true; // 件数は気にしない（0でもOK）
+	    	
+	    	}catch (SQLException e) {
+	            System.out.println("SQLエラー: " + e.getMessage());
+	    		e.printStackTrace();
+	    		return false;
+	    	}
+	    }
+		
 
 }
