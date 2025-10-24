@@ -15,7 +15,7 @@
 <main class="wrapper">
 <h2>Change Cheese</h2>
 	<p class="msg_info">Cheese Diaryを変更しました🧀</p>
-	<form action="myCheese" method="get">
+	<form action="MyCheese" method="get">
 	<input type="submit" name="mycheese" value="My Cheese一覧へ" class="nav_btn">
 		</form>
 	</main>

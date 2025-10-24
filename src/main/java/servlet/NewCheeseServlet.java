@@ -2,8 +2,7 @@ package servlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.DateTimeException;
-import java.time.LocalDate;
+import java.nio.file.Paths;
 import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
@@ -145,147 +144,116 @@ public class NewCheeseServlet extends HttpServlet {
 		 
 //NewCheese新規登録→確認ボタンを押した時
 		    if ("確認".equals(step)) {
-		// 入力値取得
-		    
-        String name = request.getParameter("name");
-        String memorialYearStr = request.getParameter("memorial_year");
-        String memorialMonthStr = request.getParameter("memorial_month");
-        String areaIdStr = request.getParameter("area_id");
-        String review = request.getParameter("review");
-        Part imgPart = request.getPart("file_name");
+		        request.setCharacterEncoding("UTF-8");
+		        String name = request.getParameter("name");
+		        String memorialYearStr = request.getParameter("memorial_year");
+		        String memorialMonthStr = request.getParameter("memorial_month");
+		        String areaIdStr = request.getParameter("area_id");
+		        String review = request.getParameter("review");
+		        Part imgPart = request.getPart("file_name");
 
-        StringBuilder error = new StringBuilder();
+		        StringBuilder error = new StringBuilder();
+		        Diary diary = new Diary();
 
-        // 入力値をJavaBeanに格納（Storeクラスは要用意）
-        Diary diary = new Diary();
+		        diary.setName(name);
+		        diary.setReview(review);
 
-        diary.setName(name);
-        diary.setReview(review);
+		        // 記念年月とエリアID
+		        Integer memorialYear = parseIntOrNull(memorialYearStr, "記念年", error);
+		        Integer memorialMonth = parseIntOrNull(memorialMonthStr, "記念月", error);
+		        Integer areaId = parseIntOrNull(areaIdStr, "場所", error);
 
-        //エラーの☑
-        // memorialYear
-        Integer memorialYear = null;
-        if (memorialYearStr != null && !memorialYearStr.isEmpty()) {
-            try {
-                memorialYear = Integer.valueOf(memorialYearStr);
-                diary.setPeriod_year(memorialYear);
-            } catch (NumberFormatException e) {
-                error.append("記念年の指定が不正です。<br>");
-            }
-        } else {
-            diary.setPeriod_year(null);  // 未選択ならnull
-        }
+		        diary.setPeriod_year(memorialYear);
+		        diary.setPeriod_month(memorialMonth);
+		        diary.setArea_id(areaId);
 
-        // memorialMonth
-        Integer memorialMonth = null;
-        if (memorialMonthStr != null && !memorialMonthStr.isEmpty()) {
-            try {
-                memorialMonth = Integer.valueOf(memorialMonthStr);
-                diary.setPeriod_month(memorialMonth);
-            } catch (NumberFormatException e) {
-                error.append("記念月の指定が不正です。<br>");
-            }
-        } else {
-            diary.setPeriod_month(null); // 未選択ならnull
-        }
-        // areaId
-        Integer areaId = null;
-        if (areaIdStr != null && !areaIdStr.isEmpty()) {
-            try {
-                areaId = Integer.parseInt(areaIdStr);
-                diary.setArea_id(areaId);
-            } catch (NumberFormatException e) {
-                error.append("場所の指定が不正です。<br>");
-            } 
-        }else {
-                // 「選択しない」の場合はエラーにしない。area_idはnullのままにする
-                diary.setArea_id(null);
-            }
+		        // 店名必須チェック
+		        if (name == null || name.trim().isEmpty()) {
+		            error.append("店名を入力してください。<br>");
+		        }
 
-        // バリデーション
+		        // 画像アップロード処理（ここが重要！）
+		        if (imgPart != null && imgPart.getSize() > 0) {
+		            String fileName = Paths.get(imgPart.getSubmittedFileName()).getFileName().toString();
 
-        // 店名必須
-        if (name == null || name.trim().isEmpty()) {
-            error.append("店名を入力してください。<br>");
-        }
+		            if (!fileName.matches("(?i).*\\.(jpg|jpeg|png|gif)$")) {
+		                error.append("画像ファイルは jpg, jpeg, png, gif のみ対応しています。<br>");
+		            } else {
+		                try {
+		                    saveFile(imgPart, fileName, request); // ファイルをサーバーに保存
+		                    diary.setFile_name(fileName);
+		                    diary.setFile_path("upload/" + fileName);
+		                    System.out.println("アップロード成功: " + diary.getFile_path());
+		                } catch (IOException e) {
+		                    e.printStackTrace();
+		                    error.append("画像の保存に失敗しました。<br>");
+		                }
+		            }
+		        } else {
+		            // 画像が未選択でもOK（任意の場合）
+		            diary.setFile_name(null);
+		            diary.setFile_path(null);
+		        }
 
-        // 記念年月の未来日チェック（年月両方ある時のみ）
-        if (memorialYear != null && memorialMonth != null) {
-            try {
-                LocalDate now = LocalDate.now();
-                LocalDate enteredDate = LocalDate.of(memorialYear, memorialMonth, 1);
-                if (enteredDate.isAfter(now)) {
-                    error.append("記念年月は未来に設定できません。<br>");
-                }
-            } catch (DateTimeException e) {
-                error.append("記念年月の指定が不正です。<br>");
-            }
-        }
+		        // バリデーションエラーがあれば入力画面へ戻す
+		        if (error.length() > 0) {
+		            request.setAttribute("errorMessage", error.toString());
+		            AreaLogic areaLogic = new AreaLogic();
+		            request.setAttribute("areaList", areaLogic.getAllAreas());
+		            request.setAttribute("diary", diary);
+		            request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp").forward(request, response);
+		            return;
+		        }
 
-        // 画像チェック
-        String file_Name = getFile_name(imgPart);
-        if (file_Name != null && !file_Name.isEmpty()) {
-        	 // ファイル名をDiaryにセット
-            diary.setFile_name(file_Name);
-            if (!file_Name.matches("(?i).*\\.(jpg|jpeg|png|gif)$")) {
-                error.append("画像ファイルは jpg, jpeg, png, gif のみ対応しています。<br>");
-            } else {
-                // ファイル保存処理
-                String uploadPath = getServletContext().getRealPath("/upload");
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir();
-                }
-                try {
-                    imgPart.write(uploadPath + File.separator + file_Name);
-                    // サーバー上のパスをDiaryにセット（例: upload/filename.jpg）
-                    diary.setFile_path("upload/" + file_Name);
-                } catch (IOException e) {
-                    error.append("画像の保存に失敗しました。<br>");
-                    e.printStackTrace();
-                }
-        }
+		        // 成功時：確認画面へ
+		        HttpSession session1 = request.getSession();
+		        session1.setAttribute("diary", diary);
 
-     // エラーがある場合
-        if (error.length() > 0) {
-            request.setAttribute("errorMessage", error.toString());
+		        AreaLogic areaLogic = new AreaLogic();
+		        List<Area> areaList = areaLogic.getAllAreas();
+		        String areaName = "不明";
+		        if (areaId != null) {
+		            for (Area area : areaList) {
+		                if (area.getId() == areaId) {
+		                    areaName = area.getArea_name();
+		                    break;
+		                }
+		            }
+		        }
 
-            AreaLogic areaLogic = new AreaLogic();
-			List<Area> areaList = areaLogic.getAllAreas();
-			request.setAttribute("areaList", areaList);
+		        request.setAttribute("areaName", areaName);
+		        request.setAttribute("memorialYearDisplay", memorialYear != null ? memorialYear.toString() : "不明");
+		        request.setAttribute("memorialMonthDisplay", memorialMonth != null ? memorialMonth.toString() : "不明");
+		        request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response);
+		    }
 
-            // セッションに入力値を保存（エラー時）
-            session.setAttribute("diary", diary);
-
-            request.getRequestDispatcher("/WEB-INF/jsp/user/newCheese.jsp").forward(request, response);
-            return;
-        }
-        // エラーなし → 入力値をセッションに保存して確認画面へ
-        session.setAttribute("diary", diary); // セッションに保存
-     // areaId が null じゃないときだけ名前取得
-        String areaName = null;
-        if (areaId != null) {
-            AreaLogic areaLogic = new AreaLogic();
-            List<Area> areaList = areaLogic.getAllAreas();  // DBから再取得
-            for (Area area : areaList) {
-                if (area.getId() == areaId) {
-                    areaName = area.getArea_name();
-                    break;
-                }
-            }
-        }
-        System.out.println("file_name: " + diary.getFile_name());
-        String memorialYearDisplay = (memorialYear != null) ? memorialYear.toString() : "不明";
-        String memorialMonthDisplay = (memorialMonth != null) ? String.valueOf(memorialMonth) : "不明";
-
-        request.setAttribute("areaName", areaName != null ? areaName : "不明");      
-        request.setAttribute("memorialYearDisplay", memorialYearDisplay);
-        request.setAttribute("memorialMonthDisplay", memorialMonthDisplay);     
-        request.getRequestDispatcher("/WEB-INF/jsp/user/newCheeseCheck.jsp").forward(request, response); 
-        // 確認画面へフォワード
+// 確認画面へフォワード
 	}
+	
+	private Integer parseIntOrNull(String str, String label, StringBuilder error) {
+	    if (str == null || str.isEmpty()) return null;
+	    try {
+	        return Integer.parseInt(str);
+	    } catch (NumberFormatException e) {
+	        error.append(label + "の指定が不正です。<br>");
+	        return null;
+	    }
 	}
-	}
+	   // =====================================================
+    // ファイル保存処理（共通化）
+    // =====================================================
+    private void saveFile(Part filePart, String fileName, HttpServletRequest request) throws IOException {
+        String uploadDir = request.getServletContext().getRealPath("/upload");
+        File uploadFolder = new File(uploadDir);
+        if (!uploadFolder.exists()) {
+            uploadFolder.mkdirs();
+        }
+
+        File file = new File(uploadFolder, fileName);
+        filePart.write(file.getAbsolutePath());
+        System.out.println("ファイル保存完了: " + file.getAbsolutePath());
+    }
+
 	//postの外側
     // imgPartからファイル名を取り出す
 	private String getFile_name(Part part) {

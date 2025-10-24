@@ -1,5 +1,6 @@
 package servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.DateTimeException;
@@ -23,8 +24,11 @@ import service.DiaryLogic;
 
 
 @WebServlet("/ChangeCheese")
-@MultipartConfig(maxFileSize = 1024 * 1024 * 5) // 5MBまで
-public class ChangeCheeseServlet extends HttpServlet {
+@MultipartConfig(
+	    fileSizeThreshold = 1024 * 1024,  // 一時ファイルに書き出す閾値
+	    maxFileSize = 1024 * 1024 * 5,    // アップロードできる最大サイズ（例: 5MB）
+	    maxRequestSize = 1024 * 1024 * 10 // 全リクエストの最大サイズ
+	)public class ChangeCheeseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     
@@ -116,6 +120,9 @@ public class ChangeCheeseServlet extends HttpServlet {
         		    session3.setAttribute("periodYearStr", diary.getPeriod_year() == null ? "" : diary.getPeriod_year().toString());
         		    session3.setAttribute("periodMonthStr", diary.getPeriod_month() == null ? "" : diary.getPeriod_month().toString());
 
+        		 // ここでJSPに渡す用のファイル名をセット（file_nameはDiaryクラスのフィールド名）
+        		    request.setAttribute("fileNameFromServer", diary.getFile_name() != null ? diary.getFile_name() : "");
+
         		    AreaLogic areaLogic = new AreaLogic();
         		    List<Area> areaList = areaLogic.getAllAreas();
         		    session3.setAttribute("areaList", areaList);
@@ -165,33 +172,50 @@ public class ChangeCheeseServlet extends HttpServlet {
 		        return;
 		    }
 
-		    if ("変更登録".equals(steps)) {  // 「作成」→「変更登録」などに名前変更推奨
+		    if ("変更登録".equals(steps)) {
 		        System.out.println("doPostが呼ばれました。step=" + steps);
 		        Diary diary = (Diary) session.getAttribute("tentative");
-		        System.out.println("diary ID: " + diary.getId());  // ここがnullや0でないか
+		        System.out.println("diary ID: " + diary.getId());
 		        System.out.println("diary from session: " + diary);
-		       
-		        // まずはファイルアップロード処理（例）
-		        Part filePart = request.getPart("img_name");
-		        String uploadedFileName = null;
-		        if (filePart != null && filePart.getSize() > 0) {
-		            uploadedFileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-		            // ファイル保存処理（必要に応じて）
-		            // 例: saveFile(filePart, uploadedFileName);
-		        }
-
-		        if (uploadedFileName == null || uploadedFileName.isEmpty()) {
-		            diary.setFile_name(null); // アップロードなければnullクリア
-		        } else {
-		            diary.setFile_name(uploadedFileName); // アップロードあればセット
-		        }
 
 		        if (diary == null) {
 		            System.out.println("diaryがnullです。");
-		            response.sendRedirect("ChangeCheese"); 
+		            response.sendRedirect("ChangeCheese");
 		            return;
 		        }
 
+		        // =============================
+		        // ① ファイルアップロード処理
+		        // =============================
+		        // Multipartファイルを取得
+		        Part filePart = request.getPart("file_name");  // inputタグのnameと同じにすること
+		        if (filePart != null && filePart.getSize() > 0) {
+		            String submittedFileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+		            
+		            // ファイルを保存するディレクトリのパス（環境に合わせて調整）
+		            String uploadDir = getServletContext().getRealPath("/upload");
+		            File uploadDirFile = new File(uploadDir);
+		            if (!uploadDirFile.exists()) {
+		                uploadDirFile.mkdirs();
+		            }
+		            
+		            // ファイル保存先パス
+		            File file = new File(uploadDirFile, submittedFileName);
+		            
+		            // ファイル保存（重複ファイル名対策は別途考慮）
+		            filePart.write(file.getAbsolutePath());
+		            
+		            // Diaryにセット
+		            diary.setFile_name(submittedFileName);
+		            
+		            // セッションにも更新を反映
+		            session.setAttribute("tentative", diary);
+		        }
+		        
+
+		        // =============================
+		        // ② DB更新処理
+		        // =============================
 		        // DiaryLogicに更新処理依頼（updateDiaryメソッドを用意）
 		        DiaryLogic diaryLogic = new DiaryLogic();
 
@@ -201,10 +225,12 @@ public class ChangeCheeseServlet extends HttpServlet {
 
 		        if (success) {
 		            session.removeAttribute("tentative");
-		            response.sendRedirect("ChangeCheeseResult");  // 完了画面（変更完了画面）にリダイレクト
+		            response.sendRedirect("ChangeCheeseResult");  // 完了画面にリダイレクト
 		            return;
 		        } else {
-		            // 更新失敗時の処理
+		        	 // =============================
+		            // ③ 更新失敗時のフォールバック処理
+		            // =============================
 		            request.setAttribute("errorMessage", "更新に失敗しました。再度お試しください。");
 
 		            Integer memorialYear = diary.getPeriod_year();
@@ -225,11 +251,15 @@ public class ChangeCheeseServlet extends HttpServlet {
 		                    }
 		                }
 		            }
-		            request.setAttribute("memorialYearDisplay", memorialYearDisplay);
 
-			        }
-			      
-			    }
+		            request.setAttribute("memorialYearDisplay", memorialYearDisplay);
+		            request.setAttribute("memorialMonthDisplay", memorialMonthDisplay);
+		            request.setAttribute("areaName", areaName);
+		            request.setAttribute("areaList", areaList);
+
+		            request.getRequestDispatcher("/WEB-INF/jsp/user/changeCheese.jsp").forward(request, response);
+		        }
+		    }
         
         //入力後確認画面へ遷移する際のチェック
         if("確認".equals(action)) {
@@ -239,7 +269,7 @@ public class ChangeCheeseServlet extends HttpServlet {
             String memorialMonthStr = request.getParameter("memorial_month");
             String areaIdStr = request.getParameter("area_id");
             String review = request.getParameter("review");
-            Part imgPart = request.getPart("img_name");
+            Part imgPart = request.getPart("file_name");
             String idStr = request.getParameter("id");
             
             
@@ -391,7 +421,22 @@ public class ChangeCheeseServlet extends HttpServlet {
       return null;
      
      }    
+     private String saveFile(Part filePart, String fileName, HttpServletRequest request) throws IOException {
+    	    // 保存先ディレクトリ（Webアプリ配下の /upload）
+    	    String uploadDir = request.getServletContext().getRealPath("/upload");
 
+    	    File uploadFolder = new File(uploadDir);
+    	    if (!uploadFolder.exists()) {
+    	        uploadFolder.mkdirs(); // フォルダがなければ作成
+    	    }
+
+    	    // ファイル保存処理
+    	    File file = new File(uploadFolder, fileName);
+    	    filePart.write(file.getAbsolutePath());
+
+    	    System.out.println("ファイル保存完了: " + file.getAbsolutePath());
+    	    return fileName;
+    	}
 
 
 }

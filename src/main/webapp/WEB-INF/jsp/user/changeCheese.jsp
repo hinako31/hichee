@@ -4,24 +4,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
-     Diary diary = (Diary) session.getAttribute("tentative");
+    Diary diary = (Diary) session.getAttribute("tentative");
     if (diary == null) {
 %>
     <p>データが見つかりません。</p>
     <a href="MyCheese">戻る</a>
 <%
-        return;
-    }
+    } else {
+    	String fileNameFromServer = "";
+    	if (diary.getFile_name() != null && !diary.getFile_name().isEmpty()) {
+        	fileNameFromServer = diary.getFile_name();
+    	}
 %>
-<%
-    String fileNameFromServer = "";
-    if (session.getAttribute("tentative") != null) {
-        model.Diary tempDiary = (model.Diary) session.getAttribute("tentative");
-        if (tempDiary.getFile_name() != null) {
-            fileNameFromServer = tempDiary.getFile_name();
-        }
-    }
-%>
+
 
 <!DOCTYPE html>
 <html>
@@ -114,8 +109,7 @@
 
 <label for="img_name">画像：</label>
 <c:choose>
-    <c:when test="${not empty sessionScope.tentative.file_name and sessionScope.tentative.file_name ne ''}">
-
+    <c:when test="${not empty sessionScope.tentative.file_name}">
         <img id="preview" src="upload/${sessionScope.tentative.file_name}" alt="画像" style="max-width:200px;">
     </c:when>
     <c:otherwise>
@@ -123,33 +117,21 @@
     </c:otherwise>
 </c:choose>
 <br>
-<input type="file" name="img_name" id="img_name" accept="image/*">
+<input type="file" name="file_name" id="img_name" accept="image/*">
 <span id="fileNameDisplay">ファイルが選択されていません</span>
 
-
 <script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const fileNameFromServer = "<%= fileNameFromServer %>";
-
-    if (fileNameFromServer) {
-      fileNameDisplay.textContent = fileNameFromServer;
-    } else {
-      fileNameDisplay.textContent = 'ファイルが選択されていません';
-    }
-  });
-
-  const fileInput = document.getElementById('img_name');
-  const fileNameDisplay = document.getElementById('fileNameDisplay');
-
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files.length > 0) {
-      fileNameDisplay.textContent = fileInput.files[0].name;
-    } else {
-      fileNameDisplay.textContent = 'ファイルが選択されていません';
-    }
-  });
+    window.addEventListener('DOMContentLoaded', () => {
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const fileNameFromServer = "<%= fileNameFromServer %>";
+        if (fileNameFromServer) {
+            fileNameDisplay.textContent = fileNameFromServer;
+        } else {
+            fileNameDisplay.textContent = 'ファイルが選択されていません';
+        }
+    });
 </script>
+
 
 <br>
 
@@ -163,3 +145,7 @@
                 </form>
 </body>
 </html>
+
+<%
+}  // ← これがないとコンパイルエラーになる
+%>
