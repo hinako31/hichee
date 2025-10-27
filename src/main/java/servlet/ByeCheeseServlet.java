@@ -82,6 +82,7 @@ public class ByeCheeseServlet extends HttpServlet {
         if ("削除".equals(steps)) {
             // ② 実際に削除処理を行う
         	 // 確認画面からの分岐   
+        	System.out.println("削除ボタンを押した");
         	 String idStr = request.getParameter("id");
              int id = Integer.parseInt(idStr);
         	HttpSession session = request.getSession(false);

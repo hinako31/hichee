@@ -46,13 +46,14 @@ Diary diary = (Diary) session.getAttribute("diary");
         レビュー：<br>${fn:escapeXml(sessionScope.diary.review)}<br>
         添付ファイル：${sessionScope.diary['file_name'] == null ? "なし" : sessionScope.diary['file_name']}<br>
     </p>
-    <form action="ByeCheese" method="post" enctype="multipart/form-data">
+    <form action="ByeCheese" method="post">
         <input type="hidden" name="action" value="delete">  <!-- 削除実行に使う -->
         <input type="hidden" name="id" value="${sessionScope.diary.id}">
         <button type="submit" name="steps" value="削除" class="confirm_btn">削除</button>
+        </form>
         <button type="button" onclick="history.back()" class="nav_btn">
 		<i class="fa-solid fa-arrow-rotate-left"></i>戻る</button>
-		</form>
+		
     
 </main>
 </main>
