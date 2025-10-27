@@ -54,12 +54,13 @@ public class ResignServlet extends HttpServlet {
           response.sendRedirect("index.jsp");
           return;
       }
+                
 	            User user = (User) session.getAttribute("user");
 	            int userId=user.getId();
 	            
 	            //diaryの削除の指示
 		        DiaryLogic diarylogic=new DiaryLogic();
-	        	boolean diaryDeleted = diarylogic.deleteDiary(userId);
+	        	boolean diaryDeleted = diarylogic.resigndeleteDiary(userId);
 
 	        //User情報の削除の指示
           	UserLogic userlogic=new UserLogic();

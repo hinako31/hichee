@@ -6,7 +6,8 @@
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
-    Diary diary = (Diary) request.getAttribute("diary");
+Diary diary = (Diary) session.getAttribute("diary");
+
     if (diary == null) {
 %>
     <p>データが見つかりません。</p>
@@ -49,8 +50,10 @@
         <input type="hidden" name="action" value="delete">  <!-- 削除実行に使う -->
         <input type="hidden" name="id" value="${sessionScope.diary.id}">
         <button type="submit" name="steps" value="削除" class="confirm_btn">削除</button>
-        <button type="submit" name="steps" value="戻る" class="back_btn">戻る</button>
-    </form>
+        <button type="button" onclick="history.back()" class="nav_btn">
+		<i class="fa-solid fa-arrow-rotate-left"></i>戻る</button>
+		</form>
+    
 </main>
 </main>
 </body>

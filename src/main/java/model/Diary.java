@@ -17,9 +17,23 @@ public class Diary implements Serializable {
     private Date updated_at;      // 更新日時
 
     public Diary() {}
-
+ 
+    public Diary(int id, String name, Integer period_year, Integer period_month,int  userid,Integer area_id,String file_name,String file_path, String review, Date created_at,Date updated_at) {
+    	this.id=id;
+    	this.name=name;
+        this.period_year=period_year;
+  		this.period_month=period_month;
+  		this.userid=userid;
+  		this.area_id=area_id;
+  		this.area_id=area_id;
+  		this.file_name=file_name;
+  		this.file_path=file_path;
+  		this.review=review;
+  		this.created_at=created_at;
+    	this.updated_at=updated_at;		
+    }
     
- // getter/setter
+ // getteretter
 
 	public int getId() {
 		return id;

@@ -2,7 +2,6 @@ package servlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -13,10 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
-import model.Area;
 import model.Diary;
 import model.User;
-import service.AreaLogic;
 import service.DiaryLogic;
 
 /**
@@ -85,34 +82,41 @@ public class ByeCheeseServlet extends HttpServlet {
         if ("削除".equals(steps)) {
             // ② 実際に削除処理を行う
         	 // 確認画面からの分岐   
+        	 String idStr = request.getParameter("id");
+             int id = Integer.parseInt(idStr);
         	HttpSession session = request.getSession(false);
+        	 if (session == null) {
+        	        // セッション切れ時の処理
+        	        request.setAttribute("msg", "セッションが切れています。もう一度ログインしてください。");
+        	        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+        	        dispatcher.forward(request, response);
+        	        return;
+        	    }
             User user = (User) session.getAttribute("user");
+            if (user == null) {
+                request.setAttribute("msg", "ログイン情報が見つかりません。");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                dispatcher.forward(request, response);
+                return;
+            }
             int userId=user.getId();
             
             //diaryの削除の指示
 	        DiaryLogic diarylogic=new DiaryLogic();
-        	boolean diaryDeleted = diarylogic.deleteDiary(userId);
+        	boolean diaryDeleted = diarylogic.deleteDiary(id,userId);
 
-        	if(diaryDeleted) {
-        		request.setAttribute("msg", "日記を削除しました。");
-          		session.invalidate();
-          		 RequestDispatcher dispatcher  = request.getRequestDispatcher("/WEB-INF/jsp/user/byeCheeseResult.jsp");
-                  dispatcher.forward(request, response);
-                 
-            }   
-        	else if ("戻る".equals(steps)) {
-		        Diary diary = (Diary) session.getAttribute("diary");
-		        request.setAttribute("diary", diary);
-
-		        // エリアリストも必要ならセットする
-		        AreaLogic areaLogic = new AreaLogic();
-		        List<Area> areaList = areaLogic.getAllAreas();
-		        request.setAttribute("areaList", areaList);
-
-		        // 詳細画面に戻る
-		        request.getRequestDispatcher("/WEB-INF/jsp/user/MyCheeseDetail.jsp").forward(request, response);
-		        return;
-		    }
+        	 if (diaryDeleted) {
+        	        System.out.println("削除成功");
+        	        request.setAttribute("msg", "日記を削除しました。");
+        	        session.removeAttribute("diary"); // invalidateより安全
+        	        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/byeCheeseResult.jsp");
+        	        dispatcher.forward(request, response);
+        	    } else {
+        	        request.setAttribute("msg", "削除に失敗しました。");
+        	        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/user/error.jsp");
+        	        dispatcher.forward(request, response);
+        	    }
+        	
         }
     }
 

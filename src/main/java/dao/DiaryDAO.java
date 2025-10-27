@@ -284,13 +284,34 @@ public class DiaryDAO {
 	}
 	
 
-	 //退会時削除
-		public boolean deleteDiary(int userId) {
+	 //削除
+		public boolean deleteDiary(int id, int userId) {
+	    	String sql = "DELETE FROM diaries WHERE id = ? AND user_id = ?";
+	    	try (Connection conn = DBManager.getConnection();
+	             PreparedStatement ps = conn.prepareStatement(sql);
+	    		){
+	    		 ps.setInt(1, id);
+	    		 ps.setInt(2, userId);
+	             int rows = ps.executeUpdate(); // 戻り値を確認できる
+	             System.out.println("削除件数: " + rows);
+
+	             return rows > 0; // 件数を確認して返す方が安全
+	    	
+	    	}catch (SQLException e) {
+	            System.out.println("SQLエラー: " + e.getMessage());
+	    		e.printStackTrace();
+	    		return false;
+	    	}
+	    }
+		
+		 //退会削除
+		public boolean resigndeleteDiary(int userId) {
 	    	String sql = "DELETE FROM diaries WHERE user_id = ?";
 	    	try (Connection conn = DBManager.getConnection();
 	             PreparedStatement ps = conn.prepareStatement(sql);
 	    		){
 	    		 ps.setInt(1, userId);
+	    		 
 	             ps.executeUpdate();
 	             return true; // 件数は気にしない（0でもOK）
 	    	
@@ -300,6 +321,5 @@ public class DiaryDAO {
 	    		return false;
 	    	}
 	    }
-		
 
 }

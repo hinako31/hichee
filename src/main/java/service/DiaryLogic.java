@@ -49,12 +49,17 @@ public class DiaryLogic {
 	        return dao.findById(id, userId);
 	    }
 	    
-	    
+
+	    //Diary削除
+	    public boolean deleteDiary(int id, int userId) {
+	    	DiaryDAO dao = new DiaryDAO();
+	    	return dao.deleteDiary(id, userId);
+	    } 
 
 	  
 	    //退会したときのDiary削除
-	    public boolean deleteDiary(int userId) {
+	    public boolean resigndeleteDiary(int userId) {
 	    	DiaryDAO dao = new DiaryDAO();
-	    	return dao.deleteDiary(userId);
+	    	return dao.resigndeleteDiary(userId);
 	    }
 }
