@@ -15,5 +15,6 @@
 		<input type="submit" name="top" value="トップページへ" class="nav_btn">
 		</form>
 	</main>
+	<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>

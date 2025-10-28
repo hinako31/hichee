@@ -13,6 +13,6 @@
 		<p class="msg_info">変更が完了しました🧀</p>
 		<a href="${pageContext.request.contextPath}/Account" class="nav_btn">My Accountへ</a>
 	</main>
-<!--	フッター-->
+<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>

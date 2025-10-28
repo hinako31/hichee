@@ -143,6 +143,7 @@
                     <input type="hidden" name="id" value="<%= diary.getId() %>">
                     <button class="btn-view" type="submit">戻る</button>
                 </form>
+<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />                
 </body>
 </html>
 

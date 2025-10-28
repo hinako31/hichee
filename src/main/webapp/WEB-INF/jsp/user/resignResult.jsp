@@ -15,6 +15,6 @@
 		また会う日まで✨</p>
 		<a href="${pageContext.request.contextPath}/Main" class="nav_btn">トップページへ</a>
 	</main>
-<!--	フッター-->
+<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>

@@ -49,5 +49,6 @@
 <form action="Login" method="post">
 <input type="submit" name="mypage" value="My Pageへ" class="nav_btn">
 </form>
+<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>

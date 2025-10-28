@@ -49,5 +49,6 @@
 
 </form>
 </main>
+<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>

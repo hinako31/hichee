@@ -19,5 +19,6 @@
 	<input type="submit" name="mycheese" value="My Cheese一覧へ" class="nav_btn">
 		</form>
 	</main>
+	<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>

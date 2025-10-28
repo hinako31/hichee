@@ -96,5 +96,6 @@
  <form action="MyCheese" method="post">
       <input type="submit" name="action" value="戻る" class="btn">
       </form>
+      <jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>

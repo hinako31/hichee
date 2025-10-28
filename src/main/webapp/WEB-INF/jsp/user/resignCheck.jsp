@@ -22,6 +22,6 @@
 		<i class="fa-solid fa-arrow-rotate-left"></i>戻る</button>
 		</form>
 	</main>
-<!--	フッター-->
+<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>

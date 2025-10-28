@@ -56,6 +56,6 @@ Diary diary = (Diary) session.getAttribute("diary");
 		
     
 </main>
-</main>
+<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
 </body>
 </html>
