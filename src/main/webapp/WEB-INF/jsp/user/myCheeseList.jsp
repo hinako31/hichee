@@ -21,6 +21,12 @@
 <head>
     <meta charset="UTF-8">
     <title>検索結果一覧</title>
+    
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@900&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'メイリオ', sans-serif;
@@ -61,16 +67,27 @@
 </head>
 <body>
 
-    <h2>My Cheese</h2>
+<div class="outerWrapper">
+  <div class="login-card">
+
+   
+    <!-- ヘッダー -->
+    <header>
+      <jsp:include page="/WEB-INF/jsp/inc/header.jsp" />
+    </header>
+
+    <div class="form-area">
+      <h2 class="login-title">My Cheese</h2>
+
 
     <%
         if (diaryList == null || diaryList.isEmpty()) {
     %>
-        <p>一致する日記は見つかりませんでした。</p>
+        <p class="confirm-msg">一致する日記は見つかりませんでした。</p>
     <%
         } else {
     %>
-    <p>Cheese Diaryを表示チュウ🐭</p><br>
+    <p class="confirm-msg">   Cheese Diaryを表示チュウ🐭</p>
         <div class="diary-container">
         <%
             for (Diary diary : diaryList) {
@@ -83,7 +100,8 @@
                 <form action="MyCheese" method="post">
                     <input type="hidden" name="action" value="detail">
                     <input type="hidden" name="id" value="<%= diary.getId() %>">
-                    <button class="btn-view" type="submit">Diaryをのぞく</button>
+                    <button class="btn-view diary-btn" type="submit">Diaryをのぞく</button>
+
                 </form>
             </div>
         <%
@@ -93,9 +111,17 @@
     <%
         }
     %>
+    </div>
+     <div class="button-area-vertical">
  <form action="MyCheese" method="post">
-      <input type="submit" name="action" value="戻る" class="btn">
-      </form>
+      <button type="submit" name="action" value="戻る" class="back-button">戻る</button>
+	 </div>
+      <footer>
       <jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
+    </footer>
+
+
+
+</div>
 </body>
 </html>

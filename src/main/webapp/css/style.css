@@ -15,31 +15,19 @@ html, body {
   /* スマホ基準の比率 360:482 を維持 */
   width: 90vw;                             /* ビューポート幅の90% */
   max-width: 360px;                        /* スマホ基準の横幅上限 */
+  height: auto;         /* 内容に合わせる */
   aspect-ratio: 360 / 482;                 /* 縦横比を維持 */
+/*  max-height: 120%;*/
   background-color: #fff9c4;
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-
+  max-height: 90vh;     /* 画面縦に収める */
   display: flex;
   flex-direction: column;
   justify-content: space-between;          /* ヘッダー～フッターを均等配置 */
-  
-  
-  }
-
-
-/* カード */
-.login-card {
-  background-color: #fff9c4;
-  border-radius: 15px;
-  padding: 20px;
-  width: 320px;      /* 横幅を固定して縦横比を整える */
-  max-width: 90%;    /* スマホ画面では画面幅に収まるよう調整 */
-  max-height: 90vh;  /* 画面の縦サイズに収める */
-  text-align: center;
-   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-}
+   
+  } 
 
 /* ロゴ */
 .prompt-black {
@@ -86,6 +74,7 @@ html, body {
     font-size: 12px;   /* 小さくしたいサイズに変更 */
 	font-weight:500;
 	    margin-bottom: 8px; /* 下の余白も調整 */
+	text-align: center;
 	}
 
 
@@ -97,7 +86,7 @@ html, body {
   justify-content: flex-start; /* 左寄せ */
   align-items: center;
   font-size: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   gap: 10px; /* ラベルと入力欄の間の余白 */
 }
 
@@ -182,6 +171,19 @@ button:hover {
   width: 120px;               /* ← 狭くしたい幅をここで調整 */
 }
 
+/* 確認/MyPageボタンを縦並び・同幅で中央に */
+.button-area-vertical2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.button-area-vertical2 button,
+.button-area-vertical2 input[type="submit"] {
+  width: 120px;
+}
 
 /* フッター調整 */
 footer {
@@ -194,3 +196,135 @@ footer {
   white-space: nowrap;        /* 改行させない */
   
 }
+
+/* Diaryのテキストエリア */
+.diary-area {
+	
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+/*  margin-bottom: -10px;*/
+}
+
+.diary-area label {
+  color: #1a237e;
+  font-weight: bold;
+  font-size: 13px;
+/*  margin-top: -10px;*/
+  margin-bottom: -20px;
+  margin-left: 10px;
+}
+
+.diary-area textarea {
+  width: calc(100% - 20px);
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+    padding: 4px 5px;   
+  font-size: 13px;
+  box-sizing: border-box;
+  min-height: 80px;        /* ←高さを抑えてカード内に収める */
+}
+/* Diary確認欄（読み取り専用表示） */
+.confirm-diary {
+	padding: 6px 8px 6px 10px; /* 左側パディングを調整 */
+  font-size: 12px;
+  width: calc(100% );
+  min-height: 60px;
+  box-sizing: border-box;
+  margin-top: 10px;
+  text-align: left;
+  white-space: pre-wrap; /* 改行維持 */
+  overflow-wrap: break-word;
+  margin-left: 0;  /* ←ここを0に */
+}
+
+/* 画像セクション */
+.image-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+/*  margin-bottom: -40px;*/
+  
+}
+
+.image-area label {
+  color: #1a237e;
+  font-weight: bold;
+  margin-left: 10px;
+  margin-bottom: 1px;
+  font-size: 12px;
+  margin-top: -10px;
+}
+
+/* 画像プレビュー */
+.image-area img {
+  width: 100px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  margin-left: 50px;
+}
+
+/* ファイル選択ボタン（オレンジ） */
+input[type="file"] {
+  border: none;
+  border-radius: 6px;
+  padding: 0px 30px 0px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: -15px;     /* ←これを追加（上方向に寄せる） */
+   margin-bottom: -10px; /* ←下の余白を軽く調整 */
+}
+
+/*input[type="file"]:hover {*/
+/*  background-color: #ffc766;*/
+/*}*/
+
+/*検索一覧*/
+
+
+/* Diaryをのぞくボタンだけ小さく */
+.diary-card .btn-view {
+    font-size: 12px;       /* 文字サイズを少し小さく */
+    padding: 5px 10px;     /* ボタンの幅・高さを縮小 */
+    width: 120px;          /* 横幅固定で統一 */
+	margin-top: -19px; 
+	color: #1a237e;
+}
+/* Diaryをのぞくボタンだけ影を変更 */
+.diary-btn {
+  box-shadow: 0 2px 0 #74a7d7; 
+  
+}
+
+.diary-btn:hover {
+  background-color: #191970; /* ホバー時の背景色は元のままでもOK */
+}
+/* diary-containerを中央寄せしつつ右に少しずらす */
+.diary-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center; /* 横方向中央 */
+	background-color: transparent; /* ←白を消す */
+}
+
+/* diary-cardの背景を透明にする */
+.diary-card {
+   
+    width: 250px;
+    text-align: center;
+    background-color: transparent; /* ←白を消す */
+}
+
+/* h3の中央揃えはすでにあるので追加不要 */
+.diary-card h3 {
+    margin-top: 10px;
+    font-size: 18px;
+    text-align: center;       /* 念のため中央揃え */
+}
+
+
+

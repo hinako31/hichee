@@ -24,31 +24,85 @@
     .back_btn { background-color: #ddd; }
     img { margin-top: 10px; max-width: 200px; border-radius: 5px; }
 </style>
+
+<!-- 共通CSS -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+
+<!-- Googleフォント -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@900&display=swap" rel="stylesheet">
 </head>
+
 <body>
-<!--ヘッダー-->
-<h2>New Cheese</h2>
-<main class="wrapper">
-		<p class="msg_info">このCheese Diaryを作成しますか？🐭</p>
-		<p>
-          店名：${fn:escapeXml(sessionScope.diary.name)}<br>
-          記念年：${fn:escapeXml(memorialYearDisplay)}<br>
-          記念月：${fn:escapeXml(memorialMonthDisplay)}<br>
-          場所：${fn:escapeXml(areaName)}<br>
-          レビュー：<br>${fn:escapeXml(sessionScope.diary.review)}<br>
-          添付ファイル: ${sessionScope.diary.file_name == null ? "なし" : sessionScope.diary.file_name}<br>
+<div class="outerWrapper">
+  <div class="login-card">
+
+    <!-- ヘッダー -->
+    <header>
+      <jsp:include page="/WEB-INF/jsp/inc/header.jsp" />
+    </header>
+
+    <!-- メイン内容 -->
+    <div class="form-area">
+      <h2 class="login-title">New Cheese</h2>
+      <p class="confirm-msg">このCheese Diaryを作成しますか？🐭</p>
+
+      <div class="form-row">
+        <label>店名：</label>
+         <strong>${fn:escapeXml(sessionScope.diary.name)}</strong>
+      </div>
+      
+       <div class="form-row">
+        <label>記念年：</label>
+        <strong>${fn:escapeXml(memorialYearDisplay)}</strong>
+      </div>
+         
+          <div class="form-row">
+        <label>記念月：</label>
+        <strong>${fn:escapeXml(memorialMonthDisplay)}</strong>
+      </div>
+      
+       <div class="form-row">
+        <label>場所：</label>
+        <strong>${fn:escapeXml(areaName)}</strong>
+      </div>
+      
+      <div class="diary-area">
+        <label>Diary：</label>
+        <div class="confirm-diary">${fn:escapeXml(sessionScope.diary.review)}</div>
+        </div>
+      
+           <div class="image-area">
+        <label>画像：</label>
+        ${sessionScope.diary.file_name == null ? "なし" : sessionScope.diary.file_name}<br>
  <!-- 画像プレビュー -->
         <c:if test="${not empty sessionScope.diary.file_path}">
             <img src="${pageContext.request.contextPath}/${sessionScope.diary.file_path}" alt="画像プレビュー">
         </c:if>
-    </p>
+     </div>
+    </div>
+    
+    
+    
 
-		<form action="NewCheese" method="post">
-    <button type="submit" name="step" value="作成" class="confirm_btn">作成</button>
-    <button type="submit" name="step" value="戻る" class="back_btn">戻る</button>
+<div class="button-area-vertical2">
+<form action="NewCheese" method="post">
+      <button type="submit" name="step" value="作成">作成</button>
+       </form> </div> 
+<div class="button-area-vertical2">
+<form action="NewCheese" method="post">
+<button type="submit" name="step" value="戻る">戻る</button>
+   </form> </div>
+       
+   
 
-</form>
-</main>
-<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
+    <!-- フッター -->
+    <footer>
+      <jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
+    </footer>
+
+  </div>
+</div>
 </body>
 </html>
