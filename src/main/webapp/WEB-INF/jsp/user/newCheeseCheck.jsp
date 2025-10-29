@@ -82,10 +82,7 @@
         </c:if>
      </div>
     </div>
-    
-    
-    
-
+  
 <div class="button-area-vertical2">
 <form action="NewCheese" method="post">
       <button type="submit" name="step" value="作成">作成</button>

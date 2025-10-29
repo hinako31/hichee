@@ -20,7 +20,7 @@ Diary diary = (Diary) session.getAttribute("diary");
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>hichee ByeCheese確認</title>
 <style>
     body { font-family: "Hiragino Kaku Gothic ProN", sans-serif; background-color: #fffdf8; color: #333; }
     .wrapper { width: 80%; margin: 30px auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
@@ -33,29 +33,69 @@ Diary diary = (Diary) session.getAttribute("diary");
         .diary-img { width: 300px; height: auto; }
         .btn { margin: 10px; }
     </style>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@900&display=swap" rel="stylesheet">
 </head>
 <body>
-<h2>Bye Cheese</h2>
-<main class="wrapper">
-		<p class="msg_info">このCheese Diaryを削除しますか？🐭</p>
-		   <p>
-        店名：${fn:escapeXml(sessionScope.diary.name)}<br>
-        記念年：${fn:escapeXml(memorialYearDisplay)}<br>
-        記念月：${fn:escapeXml(memorialMonthDisplay)}<br>
-        場所：${fn:escapeXml(areaName)}<br>
-        レビュー：<br>${fn:escapeXml(sessionScope.diary.review)}<br>
-        添付ファイル：${sessionScope.diary['file_name'] == null ? "なし" : sessionScope.diary['file_name']}<br>
-    </p>
+<div class="outerWrapper">
+  <div class="login-card">
+ 
+    <header>
+      <jsp:include page="/WEB-INF/jsp/inc/header.jsp" />
+    </header>
+    
+  <div class="form-area">
+  
+       <h2 class="login-title">Bye Cheese</h2>
+
+		<p class="confirm-msg">このCheese Diaryを削除しますか？🐭</p>
+		  
+		  <div class="form-row">
+        <label>店名：</label>
+         <strong>${fn:escapeXml(sessionScope.diary.name)}</strong>
+      </div>
+        <div class="form-row">
+        <label>記念年：</label>
+         <strong>${fn:escapeXml(memorialYearDisplay)}</strong>
+      </div>
+        <div class="form-row">
+        <label>記念月：</label>
+         <strong>${fn:escapeXml(memorialMonthDisplay)}</strong>
+      </div>
+        <div class="form-row">
+        <label>場所：</label>
+         <strong>${fn:escapeXml(areaName)}</strong>
+      </div>
+        <div class="form-row">
+        <label>Diary：</label>
+         <div class="confirm-diary">${fn:escapeXml(sessionScope.diary.review)}</div>
+        </div>
+      
+        <div class="image-area">
+        <label>画像：</label>
+        ${sessionScope.diary['file_name'] == null ? "なし" : sessionScope.diary['file_name']}<br>
+        
+        
+<div class="button-area-vertical2">
     <form action="ByeCheese" method="post">
         <input type="hidden" name="action" value="delete">  <!-- 削除実行に使う -->
         <input type="hidden" name="id" value="${sessionScope.diary.id}">
         <button type="submit" name="steps" value="削除" class="confirm_btn">削除</button>
-        </form>
+        </form></div> 
+        
+<div class="button-area-vertical2">       
         <button type="button" onclick="history.back()" class="nav_btn">
 		<i class="fa-solid fa-arrow-rotate-left"></i>戻る</button>
-		
+</div> 		
     
-</main>
-<jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
+    <!-- フッター -->
+    <footer>
+      <jsp:include page="/WEB-INF/jsp/inc/footer.jsp" />
+    </footer>
+
+  </div>
+</div>
 </body>
 </html>
